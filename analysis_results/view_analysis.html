@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill Analysis Viewer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -20px -20px 20px -20px;
+            border-radius: 8px 8px 0 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .impact {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .funding {
+            background: #e8f5e9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; }
+        h3 { color: #455a64; }
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .total {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        #error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="error"></div>
+    <div id="content">Loading analysis data...</div>
+
+    <script>
+        async function loadAnalysis() {
+            try {
+                const response = await fetch('./bill_analysis_20241203_142731.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                let html = `
+                    <h1>Bill Analysis Results</h1>
+                    <div class="meta">
+                        <p>Analysis Date: ${data.analysis_date}</p>
+                        <p>URL: ${data.url}</p>
+                        <p>Sections Analyzed: ${data.sections_analyzed} / ${data.total_sections}</p>
+                    </div>
+                `;
+
+                let totalNumericFunding = 0;
+                let descriptiveFunding = [];
+
+                // Process each section
+                data.results.forEach(section => {
+                    html += `
+                        <div class="section">
+                            <div class="section-header">
+                                <h2>Section ${section.number}: ${section.title}</h2>
+                            </div>
+                            <p><strong>Summary:</strong> ${section.summary}</p>
+                            
+                            <h3>Key Points:</h3>
+                            <ul>
+                                ${section.key_points.map(point => `<li>${point}</li>`).join('')}
+                            </ul>
+                    `;
+
+                    if (section.impacts && section.impacts.length > 0) {
+                        html += `
+                            <h3>Impacts:</h3>
+                            ${section.impacts.map(impact => `
+                                <div class="impact">
+                                    <p><strong>Sector:</strong> ${impact.sector}</p>
+                                    <p><strong>Impact Level:</strong> ${impact.impact_level}/5</p>
+                                    <p><strong>Description:</strong> ${impact.description}</p>
+                                    <p><strong>Timeline:</strong> ${impact.timeline}</p>
+                                    <p><strong>Affected Groups:</strong> ${impact.affected_groups.join(', ')}</p>
+                                    ${impact.estimated_cost ? `<p><strong>Estimated Cost:</strong> ${impact.estimated_cost}</p>` : ''}
+                                </div>
+                            `).join('')}
+                        `;
+                    }
+
+                    if (section.funding_amounts) {
+                        html += `<h3>Funding:</h3>`;
+                        Object.entries(section.funding_amounts).forEach(([purpose, amount]) => {
+                            html += `
+                                <div class="funding">
+                                    <p><strong>${purpose}:</strong> ${amount}</p>
+                                </div>
+                            `;
+                            if (typeof amount === 'number') {
+                                totalNumericFunding += amount;
+                            } else {
+                                descriptiveFunding.push(`${purpose}: ${amount}`);
+                            }
+                        });
+                    }
+
+                    html += `</div>`;
+                });
+
+                // Add total funding summary
+                if (totalNumericFunding > 0 || descriptiveFunding.length > 0) {
+                    html += `
+                        <div class="total">
+                            <h2>Total Funding Summary</h2>
+                            ${totalNumericFunding > 0 ? `
+                                <p><strong>Total Quantified Funding:</strong> $${totalNumericFunding.toLocaleString()}</p>
+                            ` : ''}
+                            ${descriptiveFunding.length > 0 ? `
+                                <h3>Additional Funding (Non-numeric):</h3>
+                                <ul>
+                                    ${descriptiveFunding.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                document.getElementById('content').innerHTML = html;
+            } catch (error) {
+                const errorDiv = document.getElementById('error');
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = `
+                    <h2>Error Loading Analysis</h2>
+                    <p>${error.message}</p>
+                    <p>Make sure you're running the server from the analysis_results directory:</p>
+                    <pre>cd analysis_results && python3 -m http.server 8000</pre>
+                    <p>Then visit: <a href="http://localhost:8000/view_analysis.html">http://localhost:8000/view_analysis.html</a></p>
+                `;
+                document.getElementById('content').innerHTML = '';
+            }
+        }
+
+        loadAnalysis();
+    </script>
+</body>
+</html> 
