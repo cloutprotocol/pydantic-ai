@@ -1,0 +1,139 @@
+{
+  "url": "https://www.congress.gov/bill/117th-congress/house-bill/5376/text",
+  "analysis_date": "2024-12-03T14:05:20.783626",
+  "mode": "test",
+  "sections_analyzed": 3,
+  "total_sections": 7,
+  "results": [
+    {
+      "section_type": "section",
+      "number": "10101",
+      "title": "CORPORATE ALTERNATIVE MINIMUM TAX",
+      "content": "Section 10101. CORPORATE ALTERNATIVE MINIMUM TAX. ...(full section text provided in the prompt)...",
+      "summary": "This section reinstates the Corporate Alternative Minimum Tax (AMT) for corporations. It revises the calculation method for AMT, describes criteria for 'applicable corporations' that would be subject to this tax, and provides provisions for the treatment of General Business Credit and Credit for Prior Year Minimum Tax Liability.",
+      "key_points": [
+        "Reinstates the Corporate Alternative Minimum Tax (AMT).",
+        "Introduces a revision in the calculation of the AMT to be the excess of 15 percent of the adjusted financial statement income over the foreign tax credit.",
+        "Defines an 'applicable corporation' for this section purposes.",
+        "Includes provisions for adjusted financial statement income calculation.",
+        "Effects modifications on treatment of General Business Credit and Credit for Prior Year Minimum Tax Liability.",
+        "Amendments apply by this section are effective from taxable years beginning after December 31, 2022."
+      ],
+      "defined_terms": {
+        "applicable corporation": "Any corporation (other than an S corporation, a regulated investment company, or a real estate investment trust) which meets the average annual adjusted financial statement income test for one or more taxable years prior to such taxable year, and ending after December 31, 2021.",
+        "adjusted financial statement income": "Net income or loss of the taxpayer set forth on the taxpayer's applicable financial statement for such taxable year, adjusted as provided in this section.",
+        "financial statement net operating loss": "The amount of the net loss set forth on the corporation's applicable financial statement (determined after application of subsection (c) and without regard to this subsection) for taxable years ending after December 31, 2019."
+      },
+      "impacts": [
+        {
+          "sector": "Corporate Tax",
+          "impact_level": 4,
+          "description": "Will impact corporations with high financial statement income, as it could increase their minimum tax burden. Could also impact investment decisions and corporate financial strategies.",
+          "estimated_cost": "Based on corporate tax liability, but varies between individual corporations",
+          "timeline": "Effective from taxable years beginning after December 31, 2022",
+          "affected_groups": [
+            "Corporations",
+            "Investors"
+          ]
+        }
+      ],
+      "referenced_sections": [
+        "55",
+        "56",
+        "59"
+      ],
+      "funding_amounts": {
+        "Tax revenue due to reintroduction of Corporate AMT": "Various, based on individual corporations' financial statement income"
+      }
+    },
+    {
+      "section_type": "section",
+      "number": "10201",
+      "title": "EXCISE TAX ON REPURCHASE OF CORPORATE STOCK",
+      "content": "Section 10201. EXCISE TAX ON REPURCHASE OF CORPORATE STOCK....",
+      "summary": "This section implements a new 1% tax on the fair market value of stocks repurchased by a corporation labeled as a 'covered corporation'. The section also provides a definition for 'covered corporation', exceptions, special rules for certain foreign companies and regulations for avoidance prevention.",
+      "key_points": [
+        "1% tax placed on repurchased corporate stock",
+        "Definition and criteria for 'covered corporation'",
+        "Special provisions for stock of certain foreign corporations",
+        "Detailed exceptions for certain scenarios of stock repurchase",
+        "Prescribes regulations to prevent tax avoidance"
+      ],
+      "defined_terms": {
+        "covered corporation": "any domestic corporation the stock of which is traded on an established securities market",
+        "repurchase": "redemption with regard to the stock of a covered corporation and any transaction determined by the Secretary to be economically similar to a transaction described in subparagraph (A)",
+        "specified affiliate": "either any corporation more than 50 percent of the stock of which is owned (by vote or by value) or any partnership more than 50 percent of the capital interests or profits interests of which is held by such corporation",
+        "applicable foreign corporation": "any foreign corporation the stock of which is traded on an established securities market",
+        "covered surrogate foreign corporation": "any surrogate foreign corporation the stock of which is traded on an established securities market, but only with respect to taxable years which include any portion of the applicable period with respect to such corporation",
+        "expatriated entity": "has the meaning given such term by section 7874(a)(2)(A)"
+      },
+      "impacts": [
+        {
+          "sector": "Corporate",
+          "impact_level": 4,
+          "description": "Any domestic corporation the stock of which is traded on an established securities market is impacted through the creation of a 1% tax on their stock repurchases. Special additional provisions impact certain foreign corporations.",
+          "estimated_cost": "1% of the value of repurchased stocks",
+          "timeline": "Effective from January 1, 2023",
+          "affected_groups": [
+            "Domestic corporations with publicly traded stocks",
+            "Certain foreign corporations"
+          ]
+        }
+      ],
+      "referenced_sections": [
+        "7704(b)(1)",
+        "317(b)",
+        "7874(a)(2)(B)",
+        "7874(d)(1)",
+        "7874(a)(2)(A)",
+        "368(a)",
+        "275(a)",
+        "4501(c)",
+        "275(a)(6)",
+        "851"
+      ],
+      "funding_amounts": {}
+    },
+    {
+      "section_type": "section",
+      "number": "10301",
+      "title": "ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES",
+      "content": "Section 10301. ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES...Subtitle B--Prescription Drug Pricing Reform PART 1--LOWERING PRICES THROUGH DRUG PRICE NEGOTIATION.",
+      "summary": "This section appropriates funds to enhance the resources of the Internal Revenue Service (IRS) and related organizations for fiscal year ending September 30, 2022. This includes funding for taxpayer services, tax enforcement activities, operational supports, business systems modernization, the development of a free IRS-run 'direct e-file' tax return system, and other functions of the IRS and Treasury Department.",
+      "key_points": [
+        "Significant appropriations made to the IRS to improve services, enforcement, operations, and systems modernization",
+        "Allocation of funds for the IRS to develop and report on a free IRS-run 'direct e-file' tax system",
+        "Funds also allocated for the Treasury Inspector General, Office of Tax Policy, U.S. Tax Court, and Departmental Offices of the Treasury Department"
+      ],
+      "defined_terms": {},
+      "impacts": [
+        {
+          "sector": "Taxation and Public Services",
+          "impact_level": 5,
+          "description": "Significant boost to the IRS in terms of resource and operational capacity, which could potentially improve tax administration, enforcement, and customer service.",
+          "estimated_cost": "$79,568,133,803 total appropriated funding",
+          "timeline": "Fund to remain available until September 30, 2031, with exception for free e-file system report funds available until September 30, 2023",
+          "affected_groups": [
+            "IRS",
+            "Treasury Department",
+            "Taxpayers"
+          ]
+        }
+      ],
+      "referenced_sections": [
+        "10101"
+      ],
+      "funding_amounts": {
+        "Taxpayer services": 3181500000,
+        "Tax enforcement activities": 45637400000,
+        "IRS operations support": 25326400000,
+        "Business systems modernization": 4750700000,
+        "Free 'direct e-file' tax return system report": 15000000,
+        "Treasury Inspector General": 403000000,
+        "Office of Tax Policy": 104533803,
+        "US Tax Court": 153000000,
+        "Treasury Departmental Offices": 50000000
+      }
+    }
+  ]
+}

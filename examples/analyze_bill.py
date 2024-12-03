@@ -108,12 +108,11 @@ async def analyze_bill_from_url(url: str, test_mode: bool = False, output_dir: s
     descriptive_funding = []
     
     for result in analysis_results:
-        section = result["section"]
-        console.print(f"\n[bold]Section {section['number']}:[/] {section['title']}")
-        console.print(f"[dim]Summary:[/] {section['summary']}")
-        if section.get('funding_amounts'):
+        console.print(f"\n[bold]Section {result['number']}:[/] {result['title']}")
+        console.print(f"[dim]Summary:[/] {result['summary']}")
+        if result.get('funding_amounts'):
             console.print("[dim]Funding:[/]")
-            for purpose, amount in section['funding_amounts'].items():
+            for purpose, amount in result['funding_amounts'].items():
                 if isinstance(amount, (int, float)):
                     total_numeric_funding += amount
                     console.print(f"  • {purpose}: ${amount:,.2f}")

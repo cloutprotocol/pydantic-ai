@@ -1,8 +1,7 @@
-pydantic-ai[examples]>=0.0.8
+openai>=1.3.7
 python-dotenv>=1.0.0
-aiohttp>=3.8.0
-beautifulsoup4>=4.9.3
-pytest>=8.0.0
-trio>=0.27.0
-logfire>=2.6.0
-rich>=13.9.0
+pydantic>=2.5.2
+tiktoken>=0.5.1
+rich>=13.7.0
+aiohttp>=3.9.1
+asyncio>=3.4.3

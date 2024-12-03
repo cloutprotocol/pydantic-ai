@@ -1,0 +1,150 @@
+{
+  "url": "https://www.congress.gov/bill/117th-congress/house-bill/5376/text",
+  "analysis_date": "2024-12-03T14:03:59.831547",
+  "mode": "test",
+  "sections_analyzed": 3,
+  "total_sections": 7,
+  "results": [
+    {
+      "section_type": "section",
+      "number": "10101",
+      "title": "CORPORATE ALTERNATIVE MINIMUM TAX",
+      "content": "Section 10101. CORPORATE ALTERNATIVE MINIMUM TAX.... (text truncated for brevity)... PART 2--EXCISE TAX ON REPURCHASE OF CORPORATE STOCK",
+      "summary": "This section amends the tax code to reintroduce the Corporate Alternative Minimum Tax (AMT) for large corporations, and defines how it will be calculated and applied. It also introduces rules for the determination of the 'applicable corporations', details how to calculate the AMT foreign tax credit and makes amendments related to general business credits and prior year minimum tax liabilities.",
+      "key_points": [
+        "The imposition of the Corporate Alternative Minimum Tax (AMT) is reintroduced, which had been eliminated in the 2017 tax law.",
+        "The AMT applies to 'applicable corporations', i.e. corporations with more than $1 billion in 3-year average annual financial statement income.",
+        "Adjustments are provided for financial statement income, including disregarding certain taxes, dividends, cost recoveries, defined benefit pension plans, and adjustments for consolidated returns and related entities.",
+        "Foreign tax credit provisions introduced to prevent double taxation.",
+        "Amendments made to regulations related to general business credits."
+      ],
+      "defined_terms": {
+        "applicable corporation": "A corporation (other than an S corporation, a regulated investment company, or a real estate investment trust) with an average annual adjusted financial statement income that exceeds $1,000,000,000"
+      },
+      "impacts": [
+        {
+          "sector": "Corporate",
+          "impact_level": 5,
+          "description": "Major tax change for large corporations as they would be required to pay a higher minimum tax regardless of deductions and credits. It could significantly increase tax liability for corporations with substantial deductions and tax credits.",
+          "estimated_cost": "Varies by corporation depending upon the level of deductions and credits available",
+          "timeline": "Effective for taxable years beginning after December 31, 2022",
+          "affected_groups": [
+            "Large corporations",
+            "Multinational corporations"
+          ]
+        },
+        {
+          "sector": "Federal Government Revenue",
+          "impact_level": 4,
+          "description": "Potential significant increase in federal tax revenue by ensuring a minimum level of tax payment from large corporations.",
+          "estimated_cost": null,
+          "timeline": "Effective for taxable years beginning after December 31, 2022",
+          "affected_groups": [
+            "Federal Government"
+          ]
+        }
+      ],
+      "referenced_sections": [
+        "section 55",
+        "section 59",
+        "section 11",
+        "section 882"
+      ],
+      "funding_amounts": {}
+    },
+    {
+      "section_type": "section",
+      "number": "10201",
+      "title": "EXCISE TAX ON REPURCHASE OF CORPORATE STOCK",
+      "content": "(Full section text here...)",
+      "summary": "The section introduces a 1% excise tax on the repurchase of corporate stock by covered corporations. Covered corporations are defined as domestic corporations whose stock is traded on a recognized securities market. The section also includes rules regarding taxation on repurchase by foreign corporations or affiliates thereof, along with multiple exceptions to this rule.",
+      "key_points": [
+        "1% tax implemented on repurchase of corporate stock by covered corporations",
+        "The definition and further provisions regarding the treatment of covered corporations and their repurchases",
+        "Provision for the tax treatment of foreign corporations' stock repurchase",
+        "The introduction of exceptions to the proposed excise tax"
+      ],
+      "defined_terms": {
+        "Covered corporation": "Any domestic corporation the stock of which is traded on an established securities market",
+        "Repurchase": "A redemption within the meaning of section 317(b) with regard to the stock of a covered corporation, and any transaction determined by the Secretary to be economically similar to a transaction described in this subparagraph",
+        "Specified affiliate": "Any corporation more than 50 percent of the stock of which is owned, directly or indirectly, by such corporation, and any partnership more than 50 percent of the capital interests or profits interests of which is held, directly or indirectly, by such corporation"
+      },
+      "impacts": [
+        {
+          "sector": "Corporate",
+          "impact_level": 3,
+          "description": "May discourage stock repurchase due to increased tax burden, leading to potential changes in corporate financial strategies",
+          "estimated_cost": null,
+          "timeline": "Effective from January 1, 2023",
+          "affected_groups": [
+            "Domestic corporations",
+            "Foreign corporations",
+            "Shareholders"
+          ]
+        }
+      ],
+      "referenced_sections": [
+        "317(b)",
+        "7704(b)(1)",
+        "368(a)",
+        "851",
+        "7874(a)(2)(B)",
+        "7874(a)(2)(A)",
+        "7874(d)(1)",
+        "275(a)"
+      ],
+      "funding_amounts": null
+    },
+    {
+      "section_type": "section",
+      "number": "10301",
+      "title": "ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES",
+      "content": "Section 10301. ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES...",
+      "summary": "This section appropriates funds to enhance IRS resources in several areas to remain available until September 30, 2031, and allocates $15,000,000 for a report on a free direct efile tax return system to remain available until September 30, 2023. It also provides funding for the Treasury Inspector General for Tax Administration, the Office of Tax Policy, United States Tax Court, and the Treasury Departmental Offices.",
+      "key_points": [
+        "Appropriation of additional funds for the IRS for the fiscal year 2022",
+        "Allocation of fund for a report on a free IRS-run efile tax return system",
+        "Allocations for the Treasury Inspector General for Tax Administration, Office of Tax Policy, United States Tax Court, and Treasury Departmental Offices"
+      ],
+      "defined_terms": {},
+      "impacts": [
+        {
+          "sector": "Public Sector",
+          "impact_level": 4,
+          "description": "Increased funding for the IRS could potentially strengthen tax enforcement activities. The potential development of a free IRS-run efile tax return system could enhance tax collection processes and make the process more accessible and convenient for taxpayers.",
+          "estimated_cost": "Total appropriations totaled approximately $79 billion",
+          "timeline": "Appropriated funds are to remain available until September 30, 2031. The report on the free IRS-run efile tax return system is due within nine months of the enactment of this Act, with the allocated funds available until September 30, 2023.",
+          "affected_groups": [
+            "Internal Revenue Service",
+            "Treasury Inspector General for Tax Administration",
+            "Office of Tax Policy",
+            "United States Tax Court",
+            "Treasury Departmental Offices"
+          ]
+        }
+      ],
+      "referenced_sections": [
+        "3109",
+        "1343(b)",
+        "3109",
+        "1343(b)",
+        "3109",
+        "3109",
+        "1343(b)",
+        "3109",
+        "3109"
+      ],
+      "funding_amounts": {
+        "IRS Taxpayer Services": "$3,181,500,000",
+        "IRS Enforcement": "$45,637,400,000",
+        "IRS Operations Support": "$25,326,400,000",
+        "IRS Business Systems Modernization": "$4,750,700,000",
+        "Task Force on Free Direct efile Tax Return System": "$15,000,000",
+        "Treasury Inspector General for Tax Administration": "$403,000,000",
+        "Office of Tax Policy": "$104,533,803",
+        "United States Tax Court": "$153,000,000",
+        "Treasury Departmental Offices": "$50,000,000"
+      }
+    }
+  ]
+}
