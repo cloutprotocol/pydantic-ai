@@ -5,26 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bill Analysis Viewer</title>
     <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #4caf50;
+            --background-color: #f5f5f5;
+            --text-color: #2c3e50;
+            --border-radius: 8px;
+            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background: #f5f5f5;
+            background: var(--background-color);
+            color: var(--text-color);
         }
         .section {
             background: white;
             padding: 20px;
             margin: 20px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
         }
         .section-header {
             background: #f8f9fa;
             padding: 10px;
             margin: -20px -20px 20px -20px;
-            border-radius: 8px 8px 0 0;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
             border-bottom: 1px solid #e9ecef;
         }
         .impact {
@@ -39,25 +48,179 @@
             margin: 10px 0;
             border-radius: 4px;
         }
-        h1 { color: #2c3e50; }
-        h2 { color: #34495e; }
-        h3 { color: #455a64; }
-        .meta {
-            color: #666;
-            font-size: 0.9em;
-        }
-        .total {
-            background: #4caf50;
-            color: white;
-            padding: 15px;
-            border-radius: 4px;
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
             margin: 20px 0;
+        }
+        .metric-card {
+            background: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .impact-level {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .impact-level[data-level="1"] { background: #e3f2fd; color: #1565c0; }
+        .impact-level[data-level="2"] { background: #e8f5e9; color: #2e7d32; }
+        .impact-level[data-level="3"] { background: #fff3e0; color: #ef6c00; }
+        .impact-level[data-level="4"] { background: #fbe9e7; color: #d84315; }
+        .impact-level[data-level="5"] { background: #ffebee; color: #c62828; }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-color);
+        }
+        .timeline-item {
+            margin-left: 20px;
+            padding: 10px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin: 2px;
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .summary-box {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+        .stakeholder-impact {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .stakeholder-card {
+            background: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        .cost-summary {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        .cost-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: var(--border-radius);
+        }
+        .toc {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 20px;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin: 8px 0;
+        }
+        .toc a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .toc a:hover {
+            background-color: #f8f9fa;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--secondary-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 1000;
+        }
+        .back-to-top:hover {
+            background: #388e3c;
+        }
+        .tabs {
+            display: flex;
+            margin: 20px 0;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: var(--text-color);
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            margin-bottom: -2px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
         #error {
             background: #ffebee;
             color: #c62828;
             padding: 15px;
-            border-radius: 4px;
+            border-radius: var(--border-radius);
             margin: 20px 0;
             display: none;
         }
@@ -66,6 +229,7 @@
 <body>
     <div id="error"></div>
     <div id="content">Loading analysis data...</div>
+    <a href="#top" class="back-to-top" id="backToTop">↑ Top</a>
 
     <script>
         async function loadAnalysis() {
@@ -76,57 +240,19 @@
                 }
                 const data = await response.json();
                 
-                let html = `
-                    <h1>Bill Analysis Results</h1>
-                    <div class="meta">
-                        <p>Analysis Date: ${data.analysis_date}</p>
-                        <p>URL: ${data.url}</p>
-                        <p>Sections Analyzed: ${data.sections_analyzed} / ${data.total_sections}</p>
-                    </div>
-                `;
-
                 let totalNumericFunding = 0;
                 let descriptiveFunding = [];
+                let tocItems = [];
+                let totalImpacts = 0;
+                let maxImpactLevel = 0;
+                let sectors = new Set();
+                let stakeholders = new Set();
+                let implementationDates = [];
 
-                // Process each section
+                // First pass to collect all data
                 data.results.forEach(section => {
-                    html += `
-                        <div class="section">
-                            <div class="section-header">
-                                <h2>Section ${section.number}: ${section.title}</h2>
-                            </div>
-                            <p><strong>Summary:</strong> ${section.summary}</p>
-                            
-                            <h3>Key Points:</h3>
-                            <ul>
-                                ${section.key_points.map(point => `<li>${point}</li>`).join('')}
-                            </ul>
-                    `;
-
-                    if (section.impacts && section.impacts.length > 0) {
-                        html += `
-                            <h3>Impacts:</h3>
-                            ${section.impacts.map(impact => `
-                                <div class="impact">
-                                    <p><strong>Sector:</strong> ${impact.sector}</p>
-                                    <p><strong>Impact Level:</strong> ${impact.impact_level}/5</p>
-                                    <p><strong>Description:</strong> ${impact.description}</p>
-                                    <p><strong>Timeline:</strong> ${impact.timeline}</p>
-                                    <p><strong>Affected Groups:</strong> ${impact.affected_groups.join(', ')}</p>
-                                    ${impact.estimated_cost ? `<p><strong>Estimated Cost:</strong> ${impact.estimated_cost}</p>` : ''}
-                                </div>
-                            `).join('')}
-                        `;
-                    }
-
                     if (section.funding_amounts) {
-                        html += `<h3>Funding:</h3>`;
                         Object.entries(section.funding_amounts).forEach(([purpose, amount]) => {
-                            html += `
-                                <div class="funding">
-                                    <p><strong>${purpose}:</strong> ${amount}</p>
-                                </div>
-                            `;
                             if (typeof amount === 'number') {
                                 totalNumericFunding += amount;
                             } else {
@@ -135,28 +261,248 @@
                         });
                     }
 
-                    html += `</div>`;
+                    if (section.impacts) {
+                        section.impacts.forEach(impact => {
+                            totalImpacts++;
+                            maxImpactLevel = Math.max(maxImpactLevel, impact.impact_level);
+                            sectors.add(impact.sector);
+                            impact.affected_groups.forEach(group => stakeholders.add(group));
+                            if (impact.timeline) {
+                                implementationDates.push(impact.timeline);
+                            }
+                        });
+                    }
+
+                    tocItems.push({
+                        id: `section-${section.number.replace(/\s+/g, '-')}`,
+                        title: `Section ${section.number}: ${section.title}`,
+                        summary: section.summary
+                    });
                 });
 
-                // Add total funding summary
-                if (totalNumericFunding > 0 || descriptiveFunding.length > 0) {
-                    html += `
-                        <div class="total">
-                            <h2>Total Funding Summary</h2>
-                            ${totalNumericFunding > 0 ? `
-                                <p><strong>Total Quantified Funding:</strong> $${totalNumericFunding.toLocaleString()}</p>
-                            ` : ''}
-                            ${descriptiveFunding.length > 0 ? `
-                                <h3>Additional Funding (Non-numeric):</h3>
-                                <ul>
-                                    ${descriptiveFunding.map(item => `<li>${item}</li>`).join('')}
-                                </ul>
-                            ` : ''}
+                let html = `
+                    <div id="top">
+                        <h1>Bill Analysis Results</h1>
+                        <div class="meta">
+                            <p>Analysis Date: ${data.analysis_date}</p>
+                            <p>URL: ${data.url}</p>
+                            <p>Sections Analyzed: ${data.sections_analyzed} / ${data.total_sections}</p>
                         </div>
-                    `;
-                }
+
+                        <div class="tabs">
+                            <button class="tab active" onclick="showTab('overview')">Overview</button>
+                            <button class="tab" onclick="showTab('sections')">Sections</button>
+                            <button class="tab" onclick="showTab('impacts')">Impacts</button>
+                            <button class="tab" onclick="showTab('funding')">Funding</button>
+                        </div>
+
+                        <div id="overview" class="tab-content active">
+                            <div class="key-metrics">
+                                <div class="metric-card">
+                                    <h3>Total Sections</h3>
+                                    <div class="metric-value">${data.sections_analyzed}</div>
+                                </div>
+                                <div class="metric-card">
+                                    <h3>Total Impacts</h3>
+                                    <div class="metric-value">${totalImpacts}</div>
+                                </div>
+                                <div class="metric-card">
+                                    <h3>Affected Sectors</h3>
+                                    <div class="metric-value">${sectors.size}</div>
+                                </div>
+                                <div class="metric-card">
+                                    <h3>Maximum Impact Level</h3>
+                                    <div class="metric-value">
+                                        <span class="impact-level" data-level="${maxImpactLevel}">
+                                            ${maxImpactLevel}/5
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="cost-summary">
+                                <h2>Total Cost Analysis</h2>
+                                ${totalNumericFunding > 0 ? `
+                                    <div class="cost-item">
+                                        <h3>Total Quantified Funding</h3>
+                                        <p style="font-size: 1.5em">$${totalNumericFunding.toLocaleString()}</p>
+                                    </div>
+                                ` : ''}
+                                ${descriptiveFunding.length > 0 ? `
+                                    <div class="cost-item">
+                                        <h3>Additional Funding Allocations</h3>
+                                        <ul style="margin: 0">
+                                            ${descriptiveFunding.map(item => `<li>${item}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <div class="section">
+                                <h2>Key Stakeholders</h2>
+                                <div class="stakeholder-impact">
+                                    ${Array.from(stakeholders).map(stakeholder => `
+                                        <div class="stakeholder-card">
+                                            <h3>${stakeholder}</h3>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div class="section">
+                                <h2>Implementation Timeline</h2>
+                                <div class="timeline">
+                                    ${implementationDates.map(date => `
+                                        <div class="timeline-item">
+                                            <strong>${date}</strong>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="sections" class="tab-content">
+                            <div class="toc">
+                                <h2>Table of Contents</h2>
+                                <ul>
+                                    ${tocItems.map(item => `
+                                        <li>
+                                            <a href="#${item.id}">${item.title}</a>
+                                            <div style="font-size: 0.9em; color: #666; padding-left: 10px;">
+                                                ${item.summary}
+                                            </div>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+
+                            ${data.results.map(section => {
+                                const sectionId = `section-${section.number.replace(/\s+/g, '-')}`;
+                                return `
+                                    <div class="section" id="${sectionId}">
+                                        <div class="section-header">
+                                            <h2>Section ${section.number}: ${section.title}</h2>
+                                        </div>
+                                        
+                                        <div class="summary-box">
+                                            <h3>Summary</h3>
+                                            <p>${section.summary}</p>
+                                        </div>
+                                        
+                                        <h3>Key Points</h3>
+                                        <ul>
+                                            ${section.key_points.map(point => `<li>${point}</li>`).join('')}
+                                        </ul>
+
+                                        ${section.impacts && section.impacts.length > 0 ? `
+                                            <h3>Impacts</h3>
+                                            ${section.impacts.map(impact => `
+                                                <div class="impact">
+                                                    <p>
+                                                        <strong>Sector:</strong> ${impact.sector}
+                                                        <span class="impact-level" data-level="${impact.impact_level}">
+                                                            Impact: ${impact.impact_level}/5
+                                                        </span>
+                                                    </p>
+                                                    <p><strong>Description:</strong> ${impact.description}</p>
+                                                    <p><strong>Timeline:</strong> ${impact.timeline}</p>
+                                                    <p><strong>Affected Groups:</strong></p>
+                                                    <div>
+                                                        ${impact.affected_groups.map(group => 
+                                                            `<span class="tag">${group}</span>`
+                                                        ).join('')}
+                                                    </div>
+                                                    ${impact.estimated_cost ? `
+                                                        <p><strong>Estimated Cost:</strong> ${impact.estimated_cost}</p>
+                                                    ` : ''}
+                                                </div>
+                                            `).join('')}
+                                        ` : ''}
+
+                                        ${section.funding_amounts ? `
+                                            <h3>Funding</h3>
+                                            ${Object.entries(section.funding_amounts).map(([purpose, amount]) => `
+                                                <div class="funding">
+                                                    <p><strong>${purpose}:</strong> ${amount}</p>
+                                                </div>
+                                            `).join('')}
+                                        ` : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <div id="impacts" class="tab-content">
+                            <div class="section">
+                                <h2>Impact Analysis</h2>
+                                <div class="key-metrics">
+                                    <div class="metric-card">
+                                        <h3>Total Impacts</h3>
+                                        <div class="metric-value">${totalImpacts}</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <h3>Affected Sectors</h3>
+                                        <div class="metric-value">${sectors.size}</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <h3>Stakeholder Groups</h3>
+                                        <div class="metric-value">${stakeholders.size}</div>
+                                    </div>
+                                </div>
+
+                                <h3>Impact Distribution by Sector</h3>
+                                <div class="stakeholder-impact">
+                                    ${Array.from(sectors).map(sector => `
+                                        <div class="stakeholder-card">
+                                            <h3>${sector}</h3>
+                                            <p>${data.results.reduce((count, section) => 
+                                                count + (section.impacts?.filter(impact => 
+                                                    impact.sector === sector
+                                                ).length || 0), 0)} impacts</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="funding" class="tab-content">
+                            <div class="section">
+                                <h2>Funding Analysis</h2>
+                                <div class="cost-summary">
+                                    <h2>Total Funding Overview</h2>
+                                    ${totalNumericFunding > 0 ? `
+                                        <div class="cost-item">
+                                            <h3>Total Quantified Funding</h3>
+                                            <p style="font-size: 1.5em">$${totalNumericFunding.toLocaleString()}</p>
+                                        </div>
+                                    ` : ''}
+                                </div>
+
+                                <h3>Funding Allocations by Section</h3>
+                                ${data.results.filter(section => section.funding_amounts).map(section => `
+                                    <div class="funding">
+                                        <h4>Section ${section.number}</h4>
+                                        ${Object.entries(section.funding_amounts).map(([purpose, amount]) => `
+                                            <p><strong>${purpose}:</strong> ${amount}</p>
+                                        `).join('')}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
 
                 document.getElementById('content').innerHTML = html;
+
+                // Show/hide back to top button
+                window.onscroll = function() {
+                    const backToTop = document.getElementById('backToTop');
+                    if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+                        backToTop.style.display = 'block';
+                    } else {
+                        backToTop.style.display = 'none';
+                    }
+                };
             } catch (error) {
                 const errorDiv = document.getElementById('error');
                 errorDiv.style.display = 'block';
@@ -169,6 +515,24 @@
                 `;
                 document.getElementById('content').innerHTML = '';
             }
+        }
+
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activate selected tab
+            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
         }
 
         loadAnalysis();
