@@ -1,0 +1,14 @@
+README.md
+pyproject.toml
+src/__init__.py
+src/bill_analyzer.py
+src/bill_parser.py
+src/config.py
+src/embeddings.py
+src/models.py
+src/my_ai_project.egg-info/PKG-INFO
+src/my_ai_project.egg-info/SOURCES.txt
+src/my_ai_project.egg-info/dependency_links.txt
+src/my_ai_project.egg-info/requires.txt
+src/my_ai_project.egg-info/top_level.txt
+tests/test_agent.py

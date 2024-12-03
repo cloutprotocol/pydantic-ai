@@ -1,0 +1,172 @@
+{
+  "url": "https://www.congress.gov/bill/117th-congress/house-bill/5376/text",
+  "analysis_date": "2024-12-03T12:50:39.909204",
+  "mode": "test",
+  "sections_analyzed": 3,
+  "total_sections": 7,
+  "results": [
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10101",
+        "title": "CORPORATE ALTERNATIVE MINIMUM TAX",
+        "content": "Section 10101. CORPORATE ALTERNATIVE MINIMUM TAX....",
+        "summary": "This section outlines an alteration to the current corporations tax regime, with the introduction of an alternative minimum tax (AMT) for applicable corporations. 'Applicable corporations' are defined, and a range of rules and special considerations are detailed.",
+        "key_points": [
+          "Introduction of a minimum tax that is applicable to specific corporations.",
+          "This alternative minimum tax is calculated as 15% of adjusted financial statement income, minus the corporate AMT foreign tax credit.",
+          "Definition and various special rules for 'applicable corporations' are provided.",
+          "Forms of corporations that do not apply, tax credits, and various other exceptions and conditions are described."
+        ],
+        "defined_terms": {
+          "Applicable corporation": "Any corporation (excluding S corporations, regulated investment companies, or real estate investment trusts) that meets the average annual adjusted financial statement income test for one or more taxable years that are prior to such taxable year, and end after December 31, 2021.",
+          "Adjusted financial statement income": "Net income or loss of the taxpayer set forth on the taxpayer's applicable financial statement for such taxable year, adjusted as provided in this section."
+        },
+        "impacts": [
+          {
+            "sector": "corporate tax",
+            "impact_level": 4,
+            "description": "It establishes a new tax bracket for specific corporations, creating an alternative minimum tax. Corporations will need to adjust their planning and projections to account for potential liability under these new rules.",
+            "estimated_cost": null,
+            "timeline": "Begins for years after December 31, 2022.",
+            "affected_groups": [
+              "Large corporations",
+              "Multinational corporations",
+              "Corporate tax attorneys",
+              "Corporate accountants"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "55(b)",
+          "59",
+          "56A",
+          "11(d)",
+          "12",
+          "882(a)(1)",
+          "6425(c)(1)(A)",
+          "6655(e)(2)",
+          "6655(g)(1)(A)",
+          "53(e)",
+          "53(d)"
+        ],
+        "funding_amounts": null
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T20:50:15.688320",
+        "version": "1.0"
+      },
+      "processing_time": 22.522142083995277
+    },
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10201",
+        "title": "EXCISE TAX ON REPURCHASE OF CORPORATE STOCK",
+        "content": "Section 10201. EXCISE TAX ON REPURCHASE OF CORPORATE STOCK....(full section text)...repurchases (within the meaning of section 4501(c) of the Internal Revenue Code of 1986, as added by this section) of stock after December 31, 2022. PART 3--FUNDING THE INTERNAL REVENUE SERVICE AND IMPROVING TAXPAYER COMPLIANCE",
+        "summary": "This section amends the Internal Revenue Code, introducing a 1% tax on the fair market value of repurchased stock by corporations whose stocks are traded on an established securities market. It includes provisions for certain acquisitions by specified affiliates, stock adjustments, provisions for foreign corporations, and exceptions to these conditions. Effective for repurchases after December 31, 2022.",
+        "key_points": [
+          "A new 1% tax imposed on repurchased stocks by applicable corporations.",
+          "The tax affects 'covered corporations' which are domestic corporations with stock traded on an established securities market.",
+          "The tax also applies to transactions considered similar to repurchases.",
+          "Acquisition of stock by a specified affiliate of a covered corporation is treated as a repurchase.",
+          "Adjustments to the tax amount include reducing the tax by the fair market value of stock issued during the taxation year.",
+          "Unique conditions apply to foreign corporations, and certain entities are exempted from this tax.",
+          "The tax comes into effect for repurchases made after December 31, 2022."
+        ],
+        "defined_terms": {
+          "covered corporation": "any domestic corporation the stock of which is traded on an established securities market (within the meaning of section 7704(b)(1))",
+          "repurchase": "a redemption within the meaning of section 317(b) with regard to the stock of a covered corporation, and any transaction determined by the Secretary to be economically similar to a transaction described in subparagraph (A)",
+          "specified affiliate": "any corporation more than 50 percent of the stock of which is owned (by vote or by value), directly or indirectly, by such corporation, and any partnership more than 50 percent of the capital interests or profits interests of which is held, directly or indirectly, by such corporation",
+          "applicable foreign corporation": "any foreign corporation the stock of which is traded on an established securities market",
+          "covered surrogate foreign corporation": "a surrogate foreign corporation with certain stipulations",
+          "expatriated entity": "the meaning given such term by section 7874(a)(2)(A)"
+        },
+        "impacts": [
+          {
+            "sector": "corporate",
+            "impact_level": 4,
+            "description": "Would increase the tax burden on corporations that traditionally repurchase their own stock as part of their business operations. May discourage such buybacks, impacting both corporate financial strategies and investors.",
+            "estimated_cost": null,
+            "timeline": "Effective after December 31, 2022",
+            "affected_groups": [
+              "Covered domestic and foreign corporations",
+              "Investors"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "317(b)",
+          "7704(b)(1)",
+          "7874(a)(2)(B)",
+          "7874(d)(1)",
+          "7874(a)(2)(A)",
+          "368(a)",
+          "851"
+        ],
+        "funding_amounts": null
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T20:50:18.933426",
+        "version": "1.0"
+      },
+      "processing_time": 25.750593790988205
+    },
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10301",
+        "title": "ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES",
+        "content": "Section 10301. ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES. ... Subtitle B--Prescription Drug Pricing Reform PART 1--LOWERING PRICES THROUGH DRUG PRICE NEGOTIATION",
+        "summary": "This section outlines appropriations for the Internal Revenue Service (IRS) and other related government entities for FY2022. It includes funds for taxpayer services, tax enforcement activities, operations support, business systems modernization, a report on a free 'direct efile' tax return system, and other administrative expenses. Funds are also allocated for the Treasury Inspector General, the Office of Tax Policy, United States Tax Court, and for the Department of the Treasury's office oversight of the IRS implementation of this Act.",
+        "key_points": [
+          "Appropriates significant funding for the IRS to enhance services, enforcement, operational support and business systems modernization.",
+          "$15M is allocated to study the feasibility of an IRS-run free 'direct efile' tax return system.",
+          "Additional sums are appropriated for the Treasury Inspector General for Tax Administration, the Office of Tax Policy, the US Tax Court, and Treasury Departmental Offices."
+        ],
+        "defined_terms": {},
+        "impacts": [
+          {
+            "sector": "Government",
+            "impact_level": 5,
+            "description": "Significant impact on the IRS and other governmental entities, as funds are allocated to support their operations, enforcement activities, and modernizing efforts. The IRS, in particular, could potentially host a free efile tax return system.",
+            "estimated_cost": null,
+            "timeline": "Funds to remain available until 2031 (until 2023 for the efile study)",
+            "affected_groups": [
+              "IRS",
+              "Treasury Inspector General",
+              "Office of Tax Policy",
+              "US Tax Court",
+              "Treasury Departmental Offices"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "10101"
+        ],
+        "funding_amounts": {
+          "Taxpayer services": "$3,181,500,000",
+          "Tax enforcement": "$45,637,400,000",
+          "Operational support": "$25,326,400,000",
+          "Business systems modernization": "$4,750,700,000",
+          "IRS-run free direct efile tax return system study": "$15,000,000",
+          "Treasury Inspector General administration": "$403,000,000",
+          "Office of Tax Policy functions": "$104,533,803",
+          "US Tax Court expenses": "$153,000,000",
+          "Treasury Departmental Offices oversight and implementation": "$50,000,000"
+        }
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T20:50:39.907034",
+        "version": "1.0"
+      },
+      "processing_time": 24.21573383299983
+    }
+  ]
+}

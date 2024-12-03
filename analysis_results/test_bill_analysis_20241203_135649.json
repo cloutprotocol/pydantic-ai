@@ -1,0 +1,166 @@
+{
+  "url": "https://www.congress.gov/bill/117th-congress/house-bill/5376/text",
+  "analysis_date": "2024-12-03T13:56:49.016338",
+  "mode": "test",
+  "sections_analyzed": 3,
+  "total_sections": 7,
+  "results": [
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10201",
+        "title": "EXCISE TAX ON REPURCHASE OF CORPORATE STOCK",
+        "content": "(Entire section text provided)",
+        "summary": "This section introduces an excise tax of 1 percent on the fair market value of any stock that is repurchased by a covered corporation during the taxable year. It defines a covered corporation as any domestic corporation that trades its stock on an established securities market. The section also sets out rules for the acquisition of stock of certain foreign corporations and provides exceptions. This will come into effect from end of December 2022.",
+        "key_points": [
+          "Imposition of a 1% excise tax on repurchased corporate stock",
+          "Applies to domestic corporations whose stock trades on established securities markets",
+          "Also considers stock acquisition of certain foreign corporations",
+          "Exempts certain transactions, such as those related to reorganizations, retirement plans, and smaller transactions (below $1,000,000)",
+          "Mandates the Secretary to prevent abuse of the exceptions and misuse of certain classes of stock"
+        ],
+        "defined_terms": {
+          "covered corporation": "Any domestic corporation the stock of which is traded on an established securities market",
+          "repurchase": "A redemption of the stock of a covered corporation or any economically similar transaction",
+          "specified affiliate": "Any corporation more than 50 percent of whose stock is owned by another corporation, and any partnership more than 50 percent of whose capital or profits interests is held by a corporation",
+          "applicable foreign corporation": "Any foreign corporation whose stock is traded on an established securities market"
+        },
+        "impacts": [
+          {
+            "sector": "Corporate",
+            "impact_level": 4,
+            "description": "Corporations doing stock buybacks will pay an additional 1% in excise tax, potentially reducing the financial benefits of such actions",
+            "estimated_cost": "1% of the fair market value of repurchased stock",
+            "timeline": "Starts after December 31, 2022",
+            "affected_groups": [
+              "Publicly traded corporations"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "Section 317(b)",
+          "Section 7704(b)(1)",
+          "Section 7874(a)(2)(B)",
+          "Section 7874(a)(2)(A)",
+          "section 368(a)",
+          "Section 851",
+          "section 275(a)",
+          "section 4501(c)"
+        ],
+        "funding_amounts": {}
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T21:56:27.858823",
+        "version": "1.0"
+      },
+      "processing_time": 20.881217749993084
+    },
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10101",
+        "title": "CORPORATE ALTERNATIVE MINIMUM TAX",
+        "content": "Section 10101. CORPORATE ALTERNATIVE MINIMUM TAX.(a) Imposition of Tax... ...make the determination described in clause (ii), such corporation meets the average annual adjusted financial statement income test of subparagraph (B) for any taxable year beginning after the first taxable year for which such determination applies... The amendments made by this section shall apply to taxable years beginning after December 31, 2022.",
+        "summary": "Section 10101 amends the existing code to reintroduce an alternative minimum tax for certain corporations (referred to as 'applicable corporations'). It involves a 15% minimum tax rate on these corporations' adjusted financial statement income, and also lays out definitions and computations for various related terms and entities.",
+        "key_points": [
+          "Alternative minimum tax of 15% is imposed on certain corporations with over $1 billion in adjusted financial statement income, with some exceptions.",
+          "Applicable corporations defined as any corporation (other than an S corporation, a regulated investment company, or a real estate investment trust) meeting certain income criteria.",
+          "Foreign-parented multinational groups have specific rules for income calculations.",
+          "Certain adjustments made to financial statement income, taking into account net operating loss, foreign income, etc.",
+          "Broad administrative powers given to the Secretary to make rules and regulations to carry out the provisions of this section."
+        ],
+        "defined_terms": {
+          "Applicable corporations": "Corporations (other than an S corporation, a regulated investment company, or a real estate investment trust) with an adjusted financial statement income exceeding $1 billion for the 3-taxable-year period ending with the taxable year.",
+          "Adjusted financial statement income": "The net income shown on the entity's applicable financial statement, adjusted as provided in this section"
+        },
+        "impacts": [
+          {
+            "sector": "corporate",
+            "impact_level": 4,
+            "description": "Large corporations meeting the income criteria will bear additional tax burden. May influence business strategy and financial planning in these corporations.",
+            "estimated_cost": "15% of adjusted financial statement income",
+            "timeline": "Applicable to taxable years beginning after December 31, 2022",
+            "affected_groups": [
+              "Large corporations",
+              "Foreign-parented multinational groups"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "55(b)",
+          "59",
+          "56A",
+          "11(d)",
+          "12",
+          "6425(c)(1)(A)",
+          "6655(g)(1)(A)",
+          "56A",
+          "38(c)(6)(E)",
+          "53(e)",
+          "53(d)",
+          "59A"
+        ],
+        "funding_amounts": {}
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T21:56:38.328016",
+        "version": "1.0"
+      },
+      "processing_time": 31.32865529198898
+    },
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10301",
+        "title": "ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES",
+        "content": "Section 10301....Prescription Drug Pricing Reform PART 1--LOWERING PRICES THROUGH DRUG PRICE NEGOTIATION",
+        "summary": "This section proposes substantial increases in funding across various parts of the IRS for the fiscal year 2022. The money will support taxpayer services, law enforcement, operations support, and system modernization. Additionally, funds are set aside for the Treasury Inspector General for Tax Administration, the Office of Tax Policy, the U.S. Tax Court, and Departmental Offices of the Department of the Treasury, and for a task force's report on the feasibility of a free IRS-run 'direct efile' system.",
+        "key_points": [
+          "Increased funding proposed for the IRS",
+          "Funds to be aimed at various IRS operations, including taxpayer services, tax enforcement, operations support and systems modernization",
+          "Funding proposed for research into the feasibility of an IRS-run 'direct efile' tax return system.",
+          "Allocation of funds also to various areas including the Treasury Inspector General for Tax Administration, the Office of Tax Policy, and the United States Tax Court."
+        ],
+        "defined_terms": {},
+        "impacts": [
+          {
+            "sector": "Government - IRS",
+            "impact_level": 5,
+            "description": "IRS will receive substantial funding, intended to enhance its services, law enforcement activities, operational support, and systems modernization. Additionally, funds provided for research into the feasibility of an IRS-run 'direct efile' system can potentially streamline tax returns in the future.",
+            "estimated_cost": "$79.618 billion",
+            "timeline": "Funds to remain available until September 30, 2031, or 2033 for the direct efile research.",
+            "affected_groups": [
+              "IRS, Treasury Inspector General, Office of Tax Policy, United States Tax Court"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "31 U.S.C. 1343(b)",
+          "5 U.S.C. 3109"
+        ],
+        "funding_amounts": {
+          "Taxpayer services": "$3,181,500,000",
+          "Enforcement activities": "$45,637,400,000",
+          "Operations support": "$25,326,400,000",
+          "Business systems modernization": "$4,750,700,000",
+          "Task force for designing an IRS-run free 'direct efile' tax return system": "$15,000,000",
+          "Treasury Inspector General for Tax Administration": "$403,000,000",
+          "Office of Tax Policy": "$104,533,803",
+          "United States Tax Court": "$153,000,000",
+          "Departmental Offices of the Department of the Treasury": "$50,000,000"
+        }
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T21:56:49.012479",
+        "version": "1.0"
+      },
+      "processing_time": 21.107152042008238
+    }
+  ]
+}

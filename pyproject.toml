@@ -1,0 +1,14 @@
+[project]
+name = "my-ai-project"
+version = "0.1.0"
+dependencies = [
+    "pydantic-ai[examples]",
+    "pytest",
+    "python-dotenv"
+]
+
+[tool.pytest.ini_options]
+markers = ["anyio"]
+
+[tool.logfire]
+ignore_no_config = true 

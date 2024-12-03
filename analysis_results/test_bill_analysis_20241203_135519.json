@@ -1,0 +1,167 @@
+{
+  "url": "https://www.congress.gov/bill/117th-congress/house-bill/5376/text",
+  "analysis_date": "2024-12-03T13:55:19.946719",
+  "mode": "test",
+  "sections_analyzed": 3,
+  "total_sections": 7,
+  "results": [
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10201",
+        "title": "EXCISE TAX ON REPURCHASE OF CORPORATE STOCK",
+        "content": "Section 10201...",
+        "summary": "This section modifies the Internal Revenue Code to establish a 1% tax on the repurchases of corporate stock, applying to domestic corporations with stock traded on an established securities market. There are specifications and clarifications about transactions involving specified affiliates or certain foreign corporations, adjustments, and exceptions. It also provides the Secretary with regulatory authority to carry out the purposes of this section and prevent abuse.",
+        "key_points": [
+          "A 1% tax is imposed on stock repurchases by covered corporations.",
+          "Covered corporations are basically domestic corporations with their stock traded on an established securities market.",
+          "A repurchase is defined as a redemption of the stock of a covered corporation, and similar transactions.",
+          "Purchases by specified affiliates are treated as repurchases by covered corporations.",
+          "There are specific rules for acquiring stock of certain foreign corporations.",
+          "Exceptions to tax include reorganizations, contribution to certain retirement plans, and repurchase value within certain thresholds."
+        ],
+        "defined_terms": {
+          "covered corporation": "a domestic corporation with stock traded on an established securities market",
+          "repurchase": "redemption of the stock of a covered corporation or similar transactions",
+          "specified affiliate": "a corporation or a partnership having more than 50 percent of capital or profits interests held directly or indirectly by a certain corporation"
+        },
+        "impacts": [
+          {
+            "sector": "Corporations",
+            "impact_level": 4,
+            "description": "Corporations, especially those who regularly repurchase stocks, may experience increased tax obligations.",
+            "estimated_cost": null,
+            "timeline": "effective after December 31, 2022",
+            "affected_groups": [
+              "Corporations with traded stocks"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "317(b)",
+          "7704(b)(1)",
+          "368(a)",
+          "4501(c)",
+          "7874(a)(2)(B)",
+          "7874(a)(2)(A)",
+          "7874(d)(1)",
+          "851"
+        ],
+        "funding_amounts": null
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T21:54:53.928480",
+        "version": "1.0"
+      },
+      "processing_time": 17.149822291976307
+    },
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10101",
+        "title": "CORPORATE ALTERNATIVE MINIMUM TAX",
+        "content": "Section 10101. CORPORATE ALTERNATIVE MINIMUM TAX [...] be included in the same applicable financial statement with respect to such year, and ``(iii) either-- ``(I) the common parent of such entities is a foreign corporation, or ``(II) if there is no common parent, the entities are treated as having a common parent which is a foreign corporation under subparagraph (D). ``(C) Foreign corporations engaged in a trade or business within the United States.--For purposes of this paragraph, if a foreign corporation is engaged in a trade or business within the United States, such trade or business shall be treated as a separate domestic corporation that is wholly owned by the foreign corporation. ``(D) Other rules.--The Secretary shall, applying the principles of this section, prescribe rules for the application of this paragraph, including rules for the determination of-- ``(i) the entities (if any) which are to be to be treated under subparagraph (B)(iii)(II) as having a common parent which is a foreign corporation, ``(ii) the entities to be included in a foreign- parented multinational group, and ``(iii) the common parent of a foreign-parented multinational group. [...]",
+        "summary": "This section amends the rules on Corporate Alternative Minimum Tax (AMT) applying a new formula for calculating tentative minimum tax for applicable corporations. It defines 'applicable corporation', outlines the conditions for an 'average annual adjusted financial statement income test' and provides rules for foreign-parented multinational groups. In addition, it also defines the term 'adjusted financial statement income' and the rules for its calculation. The section also amends the Treatment of General Business Credit and Credit for Prior Year Minimum Tax Liability.",
+        "key_points": [
+          "Introduction of new formula for calculating tentative minimum tax for applicable corporations.",
+          "Definition and conditions for 'applicable corporation' and 'average annual adjusted financial statement income test'.",
+          "Special rules and definitions for the treatment of foreign-parented multinational groups.",
+          "Introduction of 'adjusted financial statement income' and rules for its calculation.",
+          "Amendment of the Treatment of General Business Credit and Credit for Prior Year Minimum Tax Liability."
+        ],
+        "defined_terms": {
+          "Applicable corporation": "Corporation which meets the average annual adjusted financial statement income test of subparagraph (B) for one or more taxable years.",
+          "Adjusted financial statement income": "Net income or loss of the taxpayer set forth on the taxpayer's applicable financial statement for such taxable year, adjusted as provided in new section 56A."
+        },
+        "impacts": [
+          {
+            "sector": "Corporate Sector",
+            "impact_level": 4,
+            "description": "This section may significantly impact corporations, particularly large ones and those part of foreign-multinational groups, who now need to calculate tentative minimum tax under the new formula. However, this may also lead to increased tax revenue for the government.",
+            "estimated_cost": null,
+            "timeline": "Effective for taxable years beginning after December 31, 2022.",
+            "affected_groups": [
+              "Large corporations",
+              "Foreign-parented multinational corporations"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "55(b)",
+          "59",
+          "56A",
+          "56",
+          "11(d)",
+          "12",
+          "882(a)(1)",
+          "6425(c)(1)(A)",
+          "6655(e)(2)",
+          "6655(g)(1)(A)"
+        ],
+        "funding_amounts": null
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T21:55:03.934737",
+        "version": "1.0"
+      },
+      "processing_time": 27.177569999999832
+    },
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10301",
+        "title": "ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES",
+        "content": "Section 10301. ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES...Subtitle B--Prescription Drug Pricing Reform PART 1--LOWERING PRICES THROUGH DRUG PRICE NEGOTIATION",
+        "summary": "This section allocates funds to enhance and modernize Internal Revenue Services, IRS Taxpayer Services, Enforcement, Operations Support, and Business Systems Modernization. Additional provisions are made for a Task Force to develop IRS-run free direct e-file tax return system, Inspector General for Tax Administration, Office of Tax Policy, U.S. Tax Court, and Treasury Departmental offices for oversight. All funds allocated remain available until September 30, 2031.",
+        "key_points": [
+          "Significant appropriations are made for various IRS functions.",
+          "Establishes funding for a task force to develop a free direct e-file tax return system.",
+          "Provides funding for the Office of Tax Policy, U.S. Tax Court, and Inspector General for Tax Administration.",
+          "Funds allocated are in addition to amounts otherwise available for these purposes."
+        ],
+        "defined_terms": {},
+        "impacts": [
+          {
+            "sector": "federal administration",
+            "impact_level": 5,
+            "description": "Significant increase in funding into various IRS operations and systems modernization enhances its service, enforcement and modernize its business systems.",
+            "estimated_cost": null,
+            "timeline": "Funds available until September 30, 2031",
+            "affected_groups": [
+              "Internal Revenue Service",
+              "Taxpayers"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "5 U.S.C. 3109",
+          "31 U.S.C. 1343(b)",
+          "Inspector General Act of 1978",
+          "Internal Revenue Code of 1986"
+        ],
+        "funding_amounts": {
+          "Taxpayer services": "$3,181,500,000",
+          "Enforcement": "$45,637,400,000",
+          "Operations Support": "$25,326,400,000",
+          "Business Systems Modernization": "$4,750,700,000",
+          "Task force for IRS-run free 'direct efile' tax return system": "$15,000,000",
+          "Treasury Inspector General for Tax Administration": "$403,000,000",
+          "Office of Tax Policy": "$104,533,803",
+          "United States Tax Court": "$153,000,000",
+          "Treasury Departmental Offices": "$50,000,000"
+        }
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T21:55:19.942910",
+        "version": "1.0"
+      },
+      "processing_time": 26.013613500021165
+    }
+  ]
+}

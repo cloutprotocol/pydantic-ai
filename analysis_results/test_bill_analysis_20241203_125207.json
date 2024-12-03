@@ -1,0 +1,167 @@
+{
+  "url": "https://www.congress.gov/bill/117th-congress/house-bill/5376/text",
+  "analysis_date": "2024-12-03T12:52:07.305236",
+  "mode": "test",
+  "sections_analyzed": 3,
+  "total_sections": 7,
+  "results": [
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10101",
+        "title": "CORPORATE ALTERNATIVE MINIMUM TAX",
+        "content": "Section 10101. CORPORATE ALTERNATIVE MINIMUM TAX.[...]",
+        "summary": "The section amends sections 55(b) and 59(a)(2) to reintroduce the corporate alternative minimum tax (AMT). It sets the rate at 15% for corporations earning more than $1 billion, while corporations earning less falls to zero. Adjustments are provided for calculating the adjusted financial statement income.",
+        "key_points": [
+          "The reintroduction of the corporate AMT at a 15% rate for corporations with over $1 billion of income and zero for others.",
+          "The amendment allows corporations to offset the corporate AMT with foreign tax credits.",
+          "Rules for determining corporate AMT liability for Controlled Foreign Corporations (CFCs) and foreign parented multinational groups."
+        ],
+        "defined_terms": {
+          "Applicable corporation": "Any corporation (other than an S corporation, a regulated investment company, or a real estate investment trust) which meets the average annual adjusted financial statement income test of over $1,000,000,000",
+          "Adjusted financial statement income": "The net income or loss of the taxpayer set forth on the taxpayer's applicable financial statement for such taxable year, adjusted as provided in this section."
+        },
+        "impacts": [
+          {
+            "sector": "Corporate sector",
+            "impact_level": 5,
+            "description": "Corporations with income exceeding $1 billion would be significantly impacted due to the reintroduction of the Corporate Alternative Minimum Tax.",
+            "estimated_cost": "Impact is significant but precise cost depends on many factors.",
+            "timeline": "Effective for taxable years beginning after December 31, 2022",
+            "affected_groups": [
+              "Large corporations"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "55(b)",
+          "59(a)(2)"
+        ],
+        "funding_amounts": null
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T20:51:50.454763",
+        "version": "1.0"
+      },
+      "processing_time": 22.537416834005853
+    },
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10201",
+        "title": "EXCISE TAX ON REPURCHASE OF CORPORATE STOCK",
+        "content": "Section 10201. EXCISE TAX ON REPURCHASE OF CORPORATE STOCK. (a) In General.--Subtitle D is amended by inserting after chapter 36 the following new chapter: ... FUNDING THE INTERNAL REVENUE SERVICE AND IMPROVING TAXPAYER COMPLIANCE",
+        "summary": "This section introduces a new tax on covered corporations that repurchase their own stock. The tax rate is 1% of the fair market value of repurchased stock. Certain transactions, entities, and situations are outlined that are considered exceptions. The amendments made by this section will apply to stock repurchases post December 31, 2022.",
+        "key_points": [
+          "Imposition of a 1% tax on repurchase of corporate stocks by covered corporations.",
+          "Definition of terms like 'covered corporation', 'repurchase' and 'specified affiliate'.",
+          "Special rules outlined for acquisition of stock of certain foreign corporations.",
+          "Enumeration of exceptions where the tax will not apply (e.g., dealer transactions, retirement plans).",
+          "Certain regulations and guidance will be prescribed by the Secretary."
+        ],
+        "defined_terms": {
+          "covered corporation": "Domestic corporation whose stock is traded on an established securities market",
+          "repurchase": "Redemption within the meaning of section 317(b) or transaction economically similar",
+          "specified affiliate": "Any corporation or partnership more than 50% owned by the covered corporation",
+          "applicable foreign corporation": "Any foreign corporation trading stock on an established securities market",
+          "covered surrogate foreign corporation": "Surrogate foreign corporation traded on securities market",
+          "expatriated entity": "As defined by section 7874(a)(2)(A)"
+        },
+        "impacts": [
+          {
+            "sector": "Business/Corporations",
+            "impact_level": 4,
+            "description": "Domestic and foreign corporations with traded stock will be impacted by new tax of repurchasing their own stock",
+            "estimated_cost": null,
+            "timeline": "Effective after December 31, 2022",
+            "affected_groups": [
+              "Domestic corporations",
+              "Foreign corporations",
+              "Specified affiliates"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "317(b)",
+          "7704(b)(1)",
+          "7874(a)(2)(B)",
+          "7874(d)(1)",
+          "7874(a)(2)(A)",
+          "368(a)",
+          "851",
+          "275(a)",
+          "4501(c)"
+        ],
+        "funding_amounts": null
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T20:51:57.153008",
+        "version": "1.0"
+      },
+      "processing_time": 29.215783167019254
+    },
+    {
+      "section": {
+        "section_type": "section",
+        "number": "10301",
+        "title": "ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES",
+        "content": "Section 10301. ENHANCEMENT OF INTERNAL REVENUE SERVICE RESOURCES... [omit full text for brevity]",
+        "summary": "This section allocates significant amounts to various aspects of the Internal Revenue Service (IRS) budget. It intends to strengthen the IRS's capabilities in taxpayer services, enforcement, operations support, and business systems. The section also funds a task force to design an IRS-run free 'direct efile' tax return system. Additional allocations are made to other divisions such as the Treasury Inspector General for Tax Administration, Office of Tax Policy, US Tax Court, and Treasury Departmental Offices.",
+        "key_points": [
+          "Appropriates large amounts for strengthening the IRS in multiple domains.",
+          "Allocates $15 million to a task force for designing an IRS-operated, free, direct e-file tax return system.",
+          "Ensures these funding amounts are in addition to those already available."
+        ],
+        "defined_terms": {
+          "direct efile": "a proposed IRS-run system for taxpayers to electronically file their tax returns",
+          "Treasury Inspector General for Tax Administration": "an office that provides independent oversight of IRS activities",
+          "Office of Tax Policy": "a division of the Department of the Treasury involved with tax policy formulation"
+        },
+        "impacts": [
+          {
+            "sector": "Tax and Revenue",
+            "impact_level": 4,
+            "description": "Substantial increase in IRS performance capabilities and effectiveness. Potential improvement in tax enforcement, taxpayer services, operations, and system modernization.",
+            "estimated_cost": null,
+            "timeline": "Funds to remain available until September 30, 2031, with the exception of the direct e-file system task force funds expiring September 30, 2023.",
+            "affected_groups": [
+              "IRS",
+              "General Taxpayers",
+              "Treasury Inspector General for Tax Administration",
+              "Office of Tax Policy",
+              "US Tax Court"
+            ]
+          }
+        ],
+        "referenced_sections": [
+          "31 U.S.C. 1343(b)",
+          "5 U.S.C. 3109",
+          "Inspector General Act of 1978",
+          "Internal Revenue Code of 1986"
+        ],
+        "funding_amounts": {
+          "Taxpayer services": "$3,181,500,000",
+          "Enforcement": "$45,637,400,000",
+          "Operations support": "$25,326,400,000",
+          "Business systems modernization": "$4,750,700,000",
+          "Task force for direct efile system": "$15,000,000",
+          "Treasury Inspector General for Tax Administration": "$403,000,000",
+          "Office of Tax Policy": "$104,533,803",
+          "United States Tax Court": "$153,000,000",
+          "Treasury departmental offices": "$50,000,000"
+        }
+      },
+      "confidence_score": 0.95,
+      "analysis_metadata": {
+        "model": "gpt-4",
+        "timestamp": "2024-12-03T20:52:07.303550",
+        "version": "1.0"
+      },
+      "processing_time": 16.84835058299359
+    }
+  ]
+}
