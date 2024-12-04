@@ -768,6 +768,130 @@
             flex-direction: column;
             gap: 5px;
         }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .cost-analysis {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .cost-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 25px 30px;
+        }
+
+        .cost-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            color: white;
+        }
+
+        .cost-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .cost-body {
+            padding: 30px;
+        }
+
+        .total-funding {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 25px;
+            margin-bottom: 25px;
+        }
+
+        .total-funding h3 {
+            color: var(--primary-color);
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+        }
+
+        .funding-amount {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-family: var(--font-serif);
+        }
+
+        .funding-allocations {
+            margin-top: 25px;
+        }
+
+        .funding-allocations h3 {
+            color: var(--primary-color);
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+        }
+
+        .allocation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .allocation-item:last-child {
+            border-bottom: none;
+        }
+
+        .allocation-purpose {
+            color: #4a5568;
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .allocation-amount {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-family: var(--font-sans);
+        }
+
+        .key-metrics-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .metric-card h3 {
+            margin: 0;
+            color: #4a5568;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .metric-value {
+            font-size: 2em;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        @media (max-width: 1024px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -892,45 +1016,59 @@
                             </div>
 
                             <div id="overview" class="tab-content active">
-                                <div class="key-metrics">
-                                    <div class="metric-card">
-                                        <h3>Total Sections</h3>
-                                        <div class="metric-value">${data.sections_analyzed}</div>
-                                    </div>
-                                    <div class="metric-card">
-                                        <h3>Total Impacts</h3>
-                                        <div class="metric-value">${totalImpacts}</div>
-                                    </div>
-                                    <div class="metric-card">
-                                        <h3>Affected Sectors</h3>
-                                        <div class="metric-value">${sectors.size}</div>
-                                    </div>
-                                    <div class="metric-card">
-                                        <h3>Maximum Impact Level</h3>
-                                        <div class="metric-value">
-                                            <span class="impact-level" data-level="${maxImpactLevel}">
-                                                ${maxImpactLevel}/5
-                                            </span>
+                                <div class="overview-grid">
+                                    <div class="cost-analysis">
+                                        <div class="cost-header">
+                                            <h2>Inflation Reduction Act Funding</h2>
+                                            <p>Comprehensive breakdown of allocated funds and investments</p>
                                         </div>
-                                    </div>
-                                </div>
+                                        <div class="cost-body">
+                                            <div class="total-funding">
+                                                <h3>Total Quantified Funding</h3>
+                                                <div class="funding-amount">
+                                                    $${totalNumericFunding.toLocaleString()}
+                                                </div>
+                                            </div>
 
-                                <div class="cost-summary">
-                                    <h2>Total Cost Analysis</h2>
-                                    ${totalNumericFunding > 0 ? `
-                                        <div class="cost-item">
-                                            <h3>Total Quantified Funding</h3>
-                                            <p style="font-size: 1.5em">$${totalNumericFunding.toLocaleString()}</p>
+                                            ${descriptiveFunding.length > 0 ? `
+                                                <div class="funding-allocations">
+                                                    <h3>Additional Funding Allocations</h3>
+                                                    ${descriptiveFunding.map(item => {
+                                                        const [purpose, amount] = item.split(': ');
+                                                        return `
+                                                            <div class="allocation-item">
+                                                                <span class="allocation-purpose">${purpose}</span>
+                                                                <span class="allocation-amount">${amount}</span>
+                                                            </div>
+                                                        `;
+                                                    }).join('')}
+                                                </div>
+                                            ` : ''}
                                         </div>
-                                    ` : ''}
-                                    ${descriptiveFunding.length > 0 ? `
-                                        <div class="cost-item">
-                                            <h3>Additional Funding Allocations</h3>
-                                            <ul style="margin: 0">
-                                                ${descriptiveFunding.map(item => `<li>${item}</li>`).join('')}
-                                            </ul>
+                                    </div>
+
+                                    <div class="key-metrics-sidebar">
+                                        <div class="metric-card">
+                                            <h3>Total Sections</h3>
+                                            <div class="metric-value">${data.sections_analyzed}</div>
                                         </div>
-                                    ` : ''}
+                                        <div class="metric-card">
+                                            <h3>Total Impacts</h3>
+                                            <div class="metric-value">${totalImpacts}</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <h3>Affected Sectors</h3>
+                                            <div class="metric-value">${sectors.size}</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <h3>Maximum Impact Level</h3>
+                                            <div class="metric-value">
+                                                <span class="impact-level" data-level="${maxImpactLevel}">
+                                                    ${maxImpactLevel}/5
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
