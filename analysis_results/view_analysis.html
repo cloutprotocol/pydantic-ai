@@ -731,6 +731,43 @@
                 grid-template-columns: 1fr;
             }
         }
+        .impact-header-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .section-link {
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            text-decoration: none;
+            padding: 2px 8px;
+            border-radius: var(--border-radius);
+            background: rgba(44, 82, 130, 0.1);
+            transition: all 0.2s;
+        }
+
+        .section-link:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .timeline-entry {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            background: white;
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        .timeline-content {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
     </style>
 </head>
 <body>
@@ -1241,29 +1278,60 @@
                                                                                 ${sectorImpacts
                                                                                     .sort((a, b) => b.impact_level - a.impact_level)
                                                                                     .slice(0, 3)
-                                                                                    .map(impact => `
-                                                                                        <li>
-                                                                                            <span class="impact-level" data-level="${impact.impact_level}">
-                                                                                                Level ${impact.impact_level}
-                                                                                            </span>
-                                                                                            ${impact.description}
-                                                                                        </li>
-                                                                                    `).join('')}
+                                                                                    .map(impact => {
+                                                                                        const sectionInfo = data.results.find(section => 
+                                                                                            section.impacts?.some(i => i.description === impact.description)
+                                                                                        );
+                                                                                        const sectionId = sectionInfo ? 
+                                                                                            `section-${sectionInfo.number.replace(/\s+/g, '-')}` : '';
+                                                                                        return `
+                                                                                            <li>
+                                                                                                <div class="impact-header-mini">
+                                                                                                    <span class="impact-level" data-level="${impact.impact_level}">
+                                                                                                        Level ${impact.impact_level}
+                                                                                                    </span>
+                                                                                                    ${sectionInfo ? `
+                                                                                                        <a href="#${sectionId}" class="section-link" 
+                                                                                                           onclick="showTab('sections'); showSectionTab('details');">
+                                                                                                            Section ${sectionInfo.number}
+                                                                                                        </a>
+                                                                                                    ` : ''}
+                                                                                                </div>
+                                                                                                ${impact.description}
+                                                                                            </li>
+                                                                                        `;
+                                                                                    }).join('')}
                                                                             </ul>
                                                                         </div>
 
                                                                         <div class="sector-timeline">
                                                                             <h5>Implementation Timeline</h5>
                                                                             <div class="timeline-entries">
-                                                                                ${Array.from(new Set(sectorImpacts.map(impact => ({
-                                                                                    date: impact.timeline,
-                                                                                    description: impact.description
-                                                                                }))))
+                                                                                ${Array.from(new Set(sectorImpacts.map(impact => {
+                                                                                    const sectionInfo = data.results.find(section => 
+                                                                                        section.impacts?.some(i => i.description === impact.description)
+                                                                                    );
+                                                                                    return {
+                                                                                        date: impact.timeline,
+                                                                                        description: impact.description,
+                                                                                        section: sectionInfo?.number,
+                                                                                        sectionId: sectionInfo ? 
+                                                                                            `section-${sectionInfo.number.replace(/\s+/g, '-')}` : ''
+                                                                                    };
+                                                                                })))
                                                                                 .sort((a, b) => new Date(a.date) - new Date(b.date))
                                                                                 .map(entry => `
                                                                                     <div class="timeline-entry">
-                                                                                        <span class="timeline-date">${entry.date}</span>
-                                                                                        <span class="timeline-description">${entry.description}</span>
+                                                                                        <div class="timeline-content">
+                                                                                            <span class="timeline-date">${entry.date}</span>
+                                                                                            <span class="timeline-description">${entry.description}</span>
+                                                                                        </div>
+                                                                                        ${entry.section ? `
+                                                                                            <a href="#${entry.sectionId}" class="section-link" 
+                                                                                               onclick="showTab('sections'); showSectionTab('details');">
+                                                                                                Section ${entry.section}
+                                                                                            </a>
+                                                                                        ` : ''}
                                                                                     </div>
                                                                                 `).join('')}
                                                                             </div>
