@@ -10,7 +10,9 @@
 }
 body {
 font-family: var(--font-serif);
-line-height: 1.7;
+line-height: 1.7 !important;
+line-height: 0.75;
+font-size: calc(1rem * 0.9) !important; /* Scale down by 75% */
 margin: 0;
 padding: 0;
 background: var(--background-color);
@@ -70,9 +72,8 @@ display: flex;
 gap: 10px;
 margin: 0;
 font-family: var(--font-sans);
-position: absolute;
-right: 40px;
-top: 20px;
+position: static;
+margin-top: 15px;
 }
 .action-button {
 display: inline-flex;
@@ -308,19 +309,18 @@ background: #388e3c;
 }
 .tabs {
 display: flex;
-margin: 0;
-border-bottom: 2px solid #e9ecef;
-padding: 0 20px;
-background: #f8fafc;
+overflow-x: auto;
+-webkit-overflow-scrolling: touch;
+scrollbar-width: none; /* Firefox */
+padding: 5px 0;
+}
+.tabs::-webkit-scrollbar {
+display: none; /* Chrome/Safari */
 }
 .tab {
-padding: 15px 30px;
-cursor: pointer;
-border: none;
-background: none;
-color: var(--text-color);
-font-size: 1.1em;
-transition: all 0.3s;
+flex: 0 0 auto;
+white-space: nowrap;
+padding: 8px 16px;
 }
 .tab.active {
 border-bottom: 2px solid var(--primary-color);
@@ -1983,4 +1983,24 @@ font-weight: 500;
 
 .party-ind .party-stat-value {
     color: #4CAF50;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .bill-title {
+        font-size: 1.8em;
+    }
+    
+    .bill-meta {
+        gap: 10px;
+    }
+    
+    .meta-item {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
 }
