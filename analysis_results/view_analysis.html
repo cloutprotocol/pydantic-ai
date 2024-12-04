@@ -142,7 +142,8 @@
         
         .timeline {
             position: relative;
-            padding: 20px 0;
+            padding: 20px 0 20px 40px;
+            margin-left: 20px;
         }
         .timeline::before {
             content: '';
@@ -154,19 +155,32 @@
             background: var(--primary-color);
         }
         .timeline-item {
-            margin-left: 20px;
-            padding: 10px;
             position: relative;
+            margin-bottom: 30px;
+            padding-left: 20px;
         }
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -25px;
-            top: 15px;
-            width: 10px;
-            height: 10px;
+            left: -31px;
+            top: 12px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: var(--primary-color);
+            border: 2px solid white;
+        }
+        .timeline-date {
+            font-family: var(--font-sans);
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        .timeline-content {
+            background: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-left: 3px solid var(--secondary-color);
         }
         .tag {
             display: inline-block;
@@ -330,7 +344,12 @@
                             sectors.add(impact.sector);
                             impact.affected_groups.forEach(group => stakeholders.add(group));
                             if (impact.timeline) {
-                                implementationDates.push(impact.timeline);
+                                // Check if timeline includes context
+                                const timelineEntry = {
+                                    date: impact.timeline,
+                                    context: impact.description || null
+                                };
+                                implementationDates.push(timelineEntry);
                             }
                         });
                     }
@@ -340,6 +359,13 @@
                         title: `Section ${section.number}: ${section.title}`,
                         summary: section.summary
                     });
+                });
+
+                // Sort the dates chronologically
+                implementationDates.sort((a, b) => {
+                    const dateA = new Date(a.date || a);
+                    const dateB = new Date(b.date || b);
+                    return dateA - dateB;
                 });
 
                 let html = `
@@ -437,7 +463,14 @@
                                     <div class="timeline">
                                         ${implementationDates.map(date => `
                                             <div class="timeline-item">
-                                                <strong>${date}</strong>
+                                                <div class="timeline-date">
+                                                    <strong>${date.date || date}</strong>
+                                                </div>
+                                                ${date.context ? `
+                                                    <div class="timeline-content">
+                                                        ${date.context}
+                                                    </div>
+                                                ` : ''}
                                             </div>
                                         `).join('')}
                                     </div>
