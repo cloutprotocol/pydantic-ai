@@ -1585,6 +1585,16 @@
             align-items: center;
             gap: 5px;
         }
+
+        /* Add to existing styles */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
@@ -1728,11 +1738,12 @@
                         <div class="container">
                             <div class="tabs">
                                 <button class="tab active" onclick="showTab('overview')">Overview</button>
-                                <button class="tab" onclick="showTab('stakeholders')">Stakeholders</button>
-                                <button class="tab" onclick="showTab('timeline')">Timeline</button>
                                 <button class="tab" onclick="showTab('sections')">Sections</button>
+                                <button class="tab" onclick="showTab('timeline')">Timeline</button>
                                 <button class="tab" onclick="showTab('impacts')">Impacts</button>
+                                <button class="tab" onclick="showTab('stakeholders')">Stakeholders</button>
                                 <button class="tab" onclick="showTab('funding')">Funding</button>
+                                <button class="tab" onclick="showTab('comments')">Comments</button>
                             </div>
 
                             <div id="overview" class="tab-content active">
@@ -2467,6 +2478,15 @@
                                             `).join('')}
                                         </div>
                                     `).join('')}
+                                </div>
+                            </div>
+
+                            <div id="comments" class="tab-content">
+                                <div class="section">
+                                    <h2>Comments</h2>
+                                    <div class="empty-state">
+                                        <p>No comments available for this analysis.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
