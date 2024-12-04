@@ -480,50 +480,255 @@
         }
         .impact-sectors-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
             gap: 25px;
             margin-top: 30px;
         }
         .sector-impact-card {
             background: white;
-            padding: 25px;
+            padding: 30px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 100%;
         }
         .sector-header {
-            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
         }
         .sector-header h4 {
-            font-size: 1.1em;
+            font-size: 1.2em;
             color: var(--primary-color);
             margin: 0;
         }
-        .timeline-tags {
+        .sector-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px 0;
+        }
+        .sector-key-impacts {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--secondary-color);
+        }
+        .sector-key-impacts h5 {
+            color: var(--primary-color);
+            font-size: 1.1em;
+            margin: 0 0 15px 0;
+        }
+        .sector-key-impacts ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .sector-key-impacts li {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        .sector-key-impacts li:last-child {
+            margin-bottom: 0;
+        }
+        .sector-timeline {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+        }
+        .sector-timeline h5 {
+            color: var(--primary-color);
+            font-size: 1.1em;
+            margin: 0 0 15px 0;
+        }
+        .timeline-entries {
             display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 5px;
+            flex-direction: column;
+            gap: 12px;
         }
-        h2 {
-            font-size: 1.8em;
-            margin: 0 0 30px 0;
+        .timeline-entry {
+            background: white;
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--secondary-color);
+        }
+        .timeline-date {
+            display: block;
+            font-weight: bold;
             color: var(--primary-color);
+            margin-bottom: 5px;
         }
-        h3 {
-            font-size: 1.4em;
-            margin: 30px 0 20px 0;
-            color: var(--primary-color);
-        }
-        p {
-            line-height: 1.8;
-            margin: 0 0 20px 0;
+        .timeline-description {
+            display: block;
+            font-size: 0.95em;
+            color: #4a5568;
+            line-height: 1.5;
         }
         @media (max-width: 768px) {
-            .impact-sectors-grid {
+            .sector-stats {
                 grid-template-columns: 1fr;
             }
-            .chart-container {
-                height: 500px;
+            
+            .sector-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+        .impact-letter {
+            font-size: 1.6em;
+            color: var(--primary-color);
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .sector-impact-card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .sector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .sector-header h4 {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        .sector-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px 0;
+        }
+        .sector-key-impacts {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--secondary-color);
+        }
+        .sector-key-impacts h5 {
+            color: var(--primary-color);
+            font-size: 1.1em;
+            margin: 0 0 15px 0;
+        }
+        .sector-key-impacts ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .sector-key-impacts li {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        .sector-key-impacts li:last-child {
+            margin-bottom: 0;
+        }
+        .sector-timeline {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+        }
+        .sector-timeline h5 {
+            color: var(--primary-color);
+            font-size: 1.1em;
+            margin: 0 0 15px 0;
+        }
+        .timeline-entries {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .timeline-entry {
+            background: white;
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--secondary-color);
+        }
+        .timeline-date {
+            display: block;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        .timeline-description {
+            display: block;
+            font-size: 0.95em;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        @media (max-width: 768px) {
+            .sector-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .sector-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+        .impact-index {
+            position: relative;
+            background: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .impact-index-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .impact-index-item {
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .impact-index-item:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .impact-section {
+            scroll-margin-top: 20px;
+        }
+
+        .sector-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .sector-key-impacts,
+        .sector-timeline {
+            width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            .sector-content {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -967,47 +1172,109 @@
                                         </div>
                                     </div>
 
+                                    <div class="impact-index">
+                                        <h3>Quick Navigation</h3>
+                                        <div class="impact-index-list">
+                                            ${Array.from(sectors)
+                                                .sort()
+                                                .map(sector => `
+                                                    <a href="#sector-${sector.replace(/\s+/g, '-').toLowerCase()}" 
+                                                       class="impact-index-item">
+                                                        ${sector}
+                                                    </a>
+                                                `).join('')}
+                                        </div>
+                                    </div>
+
                                     <div class="impact-details">
                                         <h3>Detailed Impact Analysis by Sector</h3>
-                                        <div class="impact-sectors-grid">
-                                            ${Array.from(sectors).map(sector => {
-                                                const sectorImpacts = data.results.flatMap(section => 
-                                                    section.impacts?.filter(impact => impact.sector === sector) || []
-                                                );
-                                                const avgImpactLevel = sectorImpacts.reduce((sum, impact) => 
-                                                    sum + impact.impact_level, 0) / sectorImpacts.length;
-                                                
-                                                return `
-                                                    <div class="sector-impact-card">
-                                                        <div class="sector-header">
-                                                            <h4>${sector}</h4>
-                                                            <span class="impact-level" data-level="${Math.round(avgImpactLevel)}">
-                                                                Avg Impact: ${avgImpactLevel.toFixed(1)}
-                                                            </span>
-                                                        </div>
-                                                        <div class="sector-stats">
-                                                            <div class="stat">
-                                                                <span class="stat-label">Total Impacts</span>
-                                                                <span class="stat-value">${sectorImpacts.length}</span>
-                                                            </div>
-                                                            <div class="stat">
-                                                                <span class="stat-label">Affected Groups</span>
-                                                                <span class="stat-value">
-                                                                    ${new Set(sectorImpacts.flatMap(impact => impact.affected_groups)).size}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="sector-timeline">
-                                                            <strong>Implementation Timeline:</strong>
-                                                            <div class="timeline-tags">
-                                                                ${Array.from(new Set(sectorImpacts.map(impact => impact.timeline)))
-                                                                    .map(date => `<span class="tag">${date}</span>`).join('')}
-                                                            </div>
+                                        ${(() => {
+                                            // First, group sectors by first letter
+                                            const groupedSectors = Array.from(sectors)
+                                                .sort()
+                                                .reduce((acc, sector) => {
+                                                    const firstLetter = sector.charAt(0).toUpperCase();
+                                                    if (!acc[firstLetter]) {
+                                                        acc[firstLetter] = [];
+                                                    }
+                                                    acc[firstLetter].push(sector);
+                                                    return acc;
+                                                }, {});
+
+                                            // Then, convert the grouped object to HTML
+                                            return Object.entries(groupedSectors)
+                                                .map(([letter, sectorList]) => `
+                                                    <div class="impact-section" id="section-${letter}">
+                                                        <h4 class="impact-letter">${letter}</h4>
+                                                        <div class="impact-sectors-grid">
+                                                            ${sectorList.map(sector => {
+                                                                const sectorImpacts = data.results.flatMap(section => 
+                                                                    section.impacts?.filter(impact => impact.sector === sector) || []
+                                                                );
+                                                                const avgImpactLevel = sectorImpacts.reduce((sum, impact) => 
+                                                                    sum + impact.impact_level, 0) / sectorImpacts.length;
+                                                                
+                                                                return `
+                                                                    <div class="sector-impact-card" id="sector-${sector.replace(/\s+/g, '-').toLowerCase()}">
+                                                                        <div class="sector-header">
+                                                                            <h4>${sector}</h4>
+                                                                            <span class="impact-level" data-level="${Math.round(avgImpactLevel)}">
+                                                                                Avg Impact: ${avgImpactLevel.toFixed(1)}
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="sector-stats">
+                                                                            <div class="stat">
+                                                                                <span class="stat-label">Total Impacts</span>
+                                                                                <span class="stat-value">${sectorImpacts.length}</span>
+                                                                            </div>
+                                                                            <div class="stat">
+                                                                                <span class="stat-label">Affected Groups</span>
+                                                                                <span class="stat-value">
+                                                                                    ${new Set(sectorImpacts.flatMap(impact => impact.affected_groups)).size}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <div class="sector-key-impacts">
+                                                                            <h5>Key Impacts</h5>
+                                                                            <ul>
+                                                                                ${sectorImpacts
+                                                                                    .sort((a, b) => b.impact_level - a.impact_level)
+                                                                                    .slice(0, 3)
+                                                                                    .map(impact => `
+                                                                                        <li>
+                                                                                            <span class="impact-level" data-level="${impact.impact_level}">
+                                                                                                Level ${impact.impact_level}
+                                                                                            </span>
+                                                                                            ${impact.description}
+                                                                                        </li>
+                                                                                    `).join('')}
+                                                                            </ul>
+                                                                        </div>
+
+                                                                        <div class="sector-timeline">
+                                                                            <h5>Implementation Timeline</h5>
+                                                                            <div class="timeline-entries">
+                                                                                ${Array.from(new Set(sectorImpacts.map(impact => ({
+                                                                                    date: impact.timeline,
+                                                                                    description: impact.description
+                                                                                }))))
+                                                                                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                                                                                .map(entry => `
+                                                                                    <div class="timeline-entry">
+                                                                                        <span class="timeline-date">${entry.date}</span>
+                                                                                        <span class="timeline-description">${entry.description}</span>
+                                                                                    </div>
+                                                                                `).join('')}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                `;
+                                                            }).join('')}
                                                         </div>
                                                     </div>
-                                                `;
-                                            }).join('')}
-                                        </div>
+                                                `).join('');
+                                        })()}
                                     </div>
                                 </div>
                             </div>
