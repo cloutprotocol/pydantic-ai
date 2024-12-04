@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Bill Analysis: Inflation Reduction Act of 2022</title>
+      <meta property="og:title" content="Bill Analysis: Inflation Reduction Act of 2022">
+      <meta property="og:description" content="Analysis results and impact assessment for the Inflation Reduction Act of 2022">
+      <meta property="og:type" content="website">
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/sigma.js/2.4.0/sigma.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/graphology/0.25.4/graphology.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/graphology-layout/0.6.1/graphology-layout.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/graphology-layout-forceatlas2/0.10.1/graphology-layout-forceatlas2.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+      <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+      <script src="https://unpkg.com/cytoscape-cola"></script>
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.6/vis-network.min.css" rel="stylesheet">
+      <link href="style.css" rel="stylesheet">
+   </head>
+   <body>
+      <div id="error"></div>
+      <div id="content">Loading analysis data...</div>
+      <a href="#top" class="back-to-top" id="backToTop">↑ Top</a>
+      <script>
+         // Register the Cola layout
+         cytoscape.use(cytoscapeCola);
+         
+         async function loadAnalysis() {
+             try {
+                 const response = await fetch('./bill_analysis_20241203_142731.json');
+                 if (!response.ok) {
+                     throw new Error(`HTTP error! status: ${response.status}`);
+                 }
+                 const data = await response.json();
+                 
+                 // Initialize all data structures first
+                 let totalNumericFunding = 0;
+                 let descriptiveFunding = [];
+                 let tocItems = [];
+                 let totalImpacts = 0;
+                 let maxImpactLevel = 0;
+                 let sectors = new Set();
+                 let stakeholders = new Set();
+                 let implementationDates = [];
+                 let stakeholderMetrics = new Map();
+         
+                 // First pass to collect all stakeholder data
+                 data.results.forEach(section => {
+                     section.impacts?.forEach(impact => {
+                         impact.affected_groups?.forEach(group => {
+                             if (!stakeholderMetrics.has(group)) {
+                                 stakeholderMetrics.set(group, {
+                                     count: 0,
+                                     totalImpactLevel: 0,
+                                     sectors: new Set(),
+                                     timeline: new Set(),
+                                     impacts: []
+                                 });
+                             }
+                             const metrics = stakeholderMetrics.get(group);
+                             metrics.count++;
+                             metrics.totalImpactLevel += impact.impact_level || 0;
+                             metrics.sectors.add(impact.sector);
+                             if (impact.timeline) metrics.timeline.add(impact.timeline);
+                             metrics.impacts.push(impact);
+                         });
+                     });
+                 });
+         
+                 // Then collect other data
+                 data.results.forEach(section => {
+                     if (section.funding_amounts) {
+                         Object.entries(section.funding_amounts).forEach(([purpose, amount]) => {
+                             if (typeof amount === 'number') {
+                                 totalNumericFunding += amount;
+                             } else {
+                                 descriptiveFunding.push(`${purpose}: ${amount}`);
+                             }
+                         });
+                     }
+         
+                     if (section.impacts) {
+                         section.impacts.forEach(impact => {
+                             totalImpacts++;
+                             maxImpactLevel = Math.max(maxImpactLevel, impact.impact_level);
+                             sectors.add(impact.sector);
+                             impact.affected_groups.forEach(group => stakeholders.add(group));
+                             if (impact.timeline) {
+                                 // Check if timeline includes context
+                                 const timelineEntry = {
+                                     date: impact.timeline,
+                                     context: impact.description || null
+                                 };
+                                 implementationDates.push(timelineEntry);
+                             }
+                             impact.affected_groups?.forEach(group => {
+                                 if (!stakeholderMetrics.has(group)) {
+                                     stakeholderMetrics.set(group, {
+                                         count: 0,
+                                         totalImpactLevel: 0,
+                                         sectors: new Set(),
+                                         timeline: new Set()
+                                     });
+                                 }
+                                 const metrics = stakeholderMetrics.get(group);
+                                 metrics.count++;
+                                 metrics.totalImpactLevel += impact.impact_level || 0;
+                                 metrics.sectors.add(impact.sector);
+                                 if (impact.timeline) metrics.timeline.add(impact.timeline);
+                             });
+                         });
+                     }
+         
+                     tocItems.push({
+                         id: `section-${section.number.replace(/\s+/g, '-')}`,
+                         title: `Section ${section.number}: ${section.title}`,
+                         summary: section.summary
+                     });
+                 });
+         
+                 // Sort the dates chronologically
+                 implementationDates.sort((a, b) => {
+                     const dateA = new Date(a.date || a);
+                     const dateB = new Date(b.date || b);
+                     return dateA - dateB;
+                 });
+         
+                 let html = `
+                     <div id="top">
+                         <header class="header">
+                             <div class="container">
+                                 <h1 class="bill-title">Inflation Reduction Act of 2022</h1>
+                                 <div class="bill-meta">
+                                     <span class="meta-item">
+                                         <strong>Bill Number:</strong> H.R. 5376
+                                     </span>
+                                     <span class="meta-item">
+                                         <strong>Congress:</strong> 117th Congress
+                                     </span>
+                                     <span class="meta-item">
+                                         <strong>Analysis Date:</strong> ${new Date().toLocaleDateString()}
+                                     </span>
+                                     <span class="ai-disclaimer">
+                                         <span class="caution-symbol">⚠</span>
+                                         AI-generated analysis: Results may require verification
+                                     </span>
+                                 </div>
+                                 <div class="header-actions">
+                                     <button onclick="exportJSON()" class="action-button secondary-button">
+                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                             <polyline points="7 10 12 15 17 10"/>
+                                             <line x1="12" y1="15" x2="12" y2="3"/>
+                                         </svg>
+                                         Export JSON
+                                     </button>
+                                     <button onclick="exportToPDF()" class="action-button primary-button">
+                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                             <polyline points="7 10 12 15 17 10"/>
+                                             <line x1="12" y1="15" x2="12" y2="3"/>
+                                         </svg>
+                                         Export PDF
+                                     </button>
+                                 </div>
+                             </div>
+                         </header>
+         
+                         <div class="container">
+                             <div class="tabs">
+                                 <button class="tab active" onclick="showTab('overview')">Overview</button>
+                                 <button class="tab" onclick="showTab('sections')">Sections</button>
+                                 <button class="tab" onclick="showTab('timeline')">Timeline</button>
+                                 <button class="tab" onclick="showTab('impacts')">Impacts</button>
+                                 <button class="tab" onclick="showTab('stakeholders')">Stakeholders</button>
+                                 <button class="tab" onclick="showTab('funding')">Funding</button>
+                                 <button class="tab" onclick="showTab('voting')">Voting</button>
+                                 <button class="tab" onclick="showTab('comments')">Comments</button>
+                             </div>
+         
+                             <div id="overview" class="tab-content active">
+                                 <div class="overview-grid">
+                                     <div class="cost-analysis">
+                                         <div class="cost-header">
+                                             <h2>Inflation Reduction Act Funding</h2>
+                                             <p>Comprehensive breakdown of allocated funds and investments</p>
+                                         </div>
+                                         <div class="cost-body">
+                                             <div class="total-funding">
+                                                 <h3>Total Quantified Funding</h3>
+                                                 <div class="funding-amount">
+                                                     $${totalNumericFunding.toLocaleString()}
+                                                 </div>
+                                             </div>
+         
+                                             ${descriptiveFunding.length > 0 ? `
+                                                 <div class="funding-allocations">
+                                                     <h3>Additional Funding Allocations</h3>
+                                                     ${descriptiveFunding.map(item => {
+                                                         const [purpose, amount] = item.split(': ');
+                                                         return `
+                                                             <div class="allocation-item">
+                                                                 <span class="allocation-purpose">${purpose}</span>
+                                                                 <span class="allocation-amount">${amount}</span>
+                                                             </div>
+                                                         `;
+                                                     }).join('')}
+                                                 </div>
+                                             ` : ''}
+                                         </div>
+                                     </div>
+         
+                                     <div class="key-metrics-sidebar">
+                                         <div class="metric-card">
+                                             <h3>Total Sections</h3>
+                                             <div class="metric-value">${data.sections_analyzed}</div>
+                                         </div>
+                                         <div class="metric-card">
+                                             <h3>Total Impacts</h3>
+                                             <div class="metric-value">${totalImpacts}</div>
+                                         </div>
+                                         <div class="metric-card">
+                                             <h3>Affected Sectors</h3>
+                                             <div class="metric-value">${sectors.size}</div>
+                                         </div>
+                                         <div class="metric-card">
+                                             <h3>Maximum Impact Level</h3>
+                                             <div class="metric-value">
+                                                 <span class="impact-level" data-level="${maxImpactLevel}">
+                                                     ${maxImpactLevel}/5
+                                                 </span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+         
+                             <div id="stakeholders" class="tab-content">
+                                 <div class="section">
+                                     <h2>Key Stakeholders</h2>
+                                     
+                                     <div class="stakeholder-metrics">
+                                         <div class="metric-card">
+                                             <h3>Total Stakeholder Groups</h3>
+                                             <div class="metric-value">${stakeholders.size}</div>
+                                         </div>
+                                         <div class="metric-card">
+                                             <h3>Average Impact Level</h3>
+                                             <div class="metric-value">
+                                                 ${(Array.from(stakeholderMetrics.values())
+                                                     .reduce((sum, m) => sum + m.totalImpactLevel / m.count, 0) / stakeholderMetrics.size)
+                                                     .toFixed(1)}
+                                             </div>
+                                         </div>
+                                         <div class="metric-card">
+                                             <h3>Most Affected Sectors</h3>
+                                             <div class="metric-value" style="font-size: 1.2em">
+                                                 ${Array.from(sectors)
+                                                     .sort((a, b) => {
+                                                         const aCount = data.results.reduce((count, section) => 
+                                                             count + (section.impacts?.filter(impact => 
+                                                                 impact.sector === a
+                                                             ).length || 0), 0);
+                                                         const bCount = data.results.reduce((count, section) => 
+                                                             count + (section.impacts?.filter(impact => 
+                                                                 impact.sector === b
+                                                             ).length || 0), 0);
+                                                         return bCount - aCount;
+                                                     })
+                                                     .slice(0, 3)
+                                                     .join(', ')}
+                                             </div>
+                                         </div>
+                                         <div class="metric-card">
+                                             <h3>Total Impact Count</h3>
+                                             <div class="metric-value">${totalImpacts}</div>
+                                         </div>
+                                     </div>
+         
+                                     <div class="stakeholder-analysis-grid">
+                                         <div class="chart-container">
+                                             <h3>Stakeholder Impact Network</h3>
+                                             <div class="network-controls">
+                                                 <select id="networkFilter">
+                                                     <option value="all">All Connections</option>
+                                                     <option value="high">High Impact (4-5)</option>
+                                                     <option value="medium">Medium Impact (2-3)</option>
+                                                     <option value="low">Low Impact (1)</option>
+                                                 </select>
+                                             </div>
+                                             <div id="networkChart"></div>
+                                         </div>
+                                     </div>
+         
+                                     <div class="stakeholder-index">
+                                         <h3>Quick Navigation</h3>
+                                         <div class="stakeholder-index-list">
+                                             ${Array.from(stakeholderMetrics.keys())
+                                                 .sort()
+                                                 .map(stakeholder => `
+                                                     <a href="#stakeholder-${stakeholder.replace(/\s+/g, '-').toLowerCase()}" 
+                                                        class="stakeholder-index-item">
+                                                         ${stakeholder}
+                                                     </a>
+                                                 `).join('')}
+                                         </div>
+                                     </div>
+         
+                                     <div class="stakeholder-details">
+                                         <h3>Detailed Stakeholder Analysis</h3>
+                                         ${(() => {
+                                             const groupedStakeholders = Array.from(stakeholderMetrics.entries())
+                                                 .sort((a, b) => a[0].localeCompare(b[0]))
+                                                 .reduce((acc, [stakeholder, metrics]) => {
+                                                     const firstLetter = stakeholder.charAt(0).toUpperCase();
+                                                     if (!acc[firstLetter]) {
+                                                         acc[firstLetter] = [];
+                                                     }
+                                                     acc[firstLetter].push([stakeholder, metrics]);
+                                                     return acc;
+                                                 }, {});
+         
+                                             return Object.entries(groupedStakeholders)
+                                                 .map(([letter, stakeholderList]) => `
+                                                     <div class="stakeholder-section" id="section-${letter}">
+                                                         <h4 class="stakeholder-letter">${letter}</h4>
+                                                         <div class="stakeholder-list">
+                                                             ${stakeholderList.map(([stakeholder, metrics]) => {
+                                                                 const avgImpact = metrics.totalImpactLevel / metrics.count;
+                                                                 const impactLevel = Math.round(avgImpact);
+                                                                 const stakeholderImpacts = data.results.flatMap(section => 
+                                                                     section.impacts?.filter(impact => 
+                                                                         impact.affected_groups.includes(stakeholder)
+                                                                     ) || []
+                                                                 );
+         
+                                                                 return `
+                                                                     <div class="stakeholder-detail-card" id="stakeholder-${stakeholder.replace(/\s+/g, '-').toLowerCase()}">
+                                                                         <div class="stakeholder-header">
+                                                                             <div class="stakeholder-title">
+                                                                                 <h4>${stakeholder}</h4>
+                                                                                 <span class="impact-level" data-level="${impactLevel}">
+                                                                                     Avg Impact: ${avgImpact.toFixed(1)}
+                                                                                 </span>
+                                                                             </div>
+                                                                             <div class="impact-bar-wrapper">
+                                                                                 <div class="impact-bar" data-level="${impactLevel}" 
+                                                                                      title="Average Impact: ${avgImpact.toFixed(1)}">
+                                                                                 </div>
+                                                                             </div>
+                                                                         </div>
+         
+                                                                         <div class="stakeholder-stats">
+                                                                             <div class="stat">
+                                                                                 <span class="stat-label">Total Impacts</span>
+                                                                                 <span class="stat-value">${metrics.count}</span>
+                                                                             </div>
+                                                                             <div class="stat">
+                                                                                 <span class="stat-label">Affected Sectors</span>
+                                                                                 <span class="stat-value">${metrics.sectors.size}</span>
+                                                                             </div>
+                                                                             <div class="stat">
+                                                                                 <span class="stat-label">Implementation Dates</span>
+                                                                                 <span class="stat-value">${metrics.timeline.size}</span>
+                                                                             </div>
+                                                                         </div>
+         
+                                                                         <div class="stakeholder-content">
+                                                                             <div class="stakeholder-key-impacts">
+                                                                                 <h5>Key Impacts</h5>
+                                                                                 <ul>
+                                                                                     ${stakeholderImpacts
+                                                                                         .sort((a, b) => b.impact_level - a.impact_level)
+                                                                                         .slice(0, 3)
+                                                                                         .map(impact => {
+                                                                                             const sectionInfo = data.results.find(section => 
+                                                                                                 section.impacts?.includes(impact)
+                                                                                             );
+                                                                                             return `
+                                                                                                 <li>
+                                                                                                     <div class="impact-header-mini">
+                                                                                                         <span class="impact-level" data-level="${impact.impact_level}">
+                                                                                                             Level ${impact.impact_level}
+                                                                                                         </span>
+                                                                                                         ${sectionInfo ? `
+                                                                                                             <a href="#section-${sectionInfo.number.replace(/\s+/g, '-')}" 
+                                                                                                                class="section-link"
+                                                                                                                onclick="showTab('sections'); showSectionTab('details');">
+                                                                                                                 Section ${sectionInfo.number}
+                                                                                                             </a>
+                                                                                                         ` : ''}
+                                                                                                     </div>
+                                                                                                     <p>${impact.description}</p>
+                                                                                                     <div class="impact-sector-tag">
+                                                                                                         ${impact.sector}
+                                                                                                     </div>
+                                                                                                 </li>
+                                                                                             `;
+                                                                                         }).join('')}
+                                                                                 </ul>
+                                                                             </div>
+         
+                                                                             <div class="stakeholder-timeline">
+                                                                                 <h5>Implementation Timeline</h5>
+                                                                                 <div class="timeline-entries">
+                                                                                     ${Array.from(metrics.timeline)
+                                                                                         .sort((a, b) => new Date(a) - new Date(b))
+                                                                                         .map(date => {
+                                                                                             const relatedImpacts = stakeholderImpacts
+                                                                                                 .filter(impact => impact.timeline === date);
+                                                                                             return `
+                                                                                                 <div class="timeline-entry">
+                                                                                                     <div class="timeline-content">
+                                                                                                         <span class="timeline-date">${date}</span>
+                                                                                                         <div class="timeline-impacts">
+                                                                                                             ${relatedImpacts.map(impact => {
+                                                                                                                 const sectionInfo = data.results.find(section => 
+                                                                                                                     section.impacts?.includes(impact)
+                                                                                                                 );
+                                                                                                                 return `
+                                                                                                                     <div class="timeline-impact">
+                                                                                                                         <p>${impact.description}</p>
+                                                                                                                         ${sectionInfo ? `
+                                                                                                                             <a href="#section-${sectionInfo.number.replace(/\s+/g, '-')}" 
+                                                                                                                                class="section-link"
+                                                                                                                                onclick="showTab('sections'); showSectionTab('details');">
+                                                                                                                             Section ${sectionInfo.number}
+                                                                                                                         </a>
+                                                                                                                     ` : ''}
+                                                                                                                     </div>
+                                                                                                                 `;
+                                                                                                             }).join('')}
+                                                                                                         </div>
+                                                                                                     </div>
+                                                                                                 </div>
+                                                                                             `;
+                                                                                         }).join('')}
+                                                                                 </div>
+                                                                             </div>
+                                                                         </div>
+                                                                     </div>
+                                                                 `;
+                                                             }).join('')}
+                                                         </div>
+                                                     </div>
+                                                 `).join('');
+                                         })()}
+                                     </div>
+                                 </div>
+                             </div>
+         
+                             <div id="timeline" class="tab-content">
+                                 <div class="section">
+                                     <h2>Implementation Timeline</h2>
+                                     
+                                     <div class="timeline-nav">
+                                         ${(() => {
+                                             const years = [...new Set(implementationDates.map(date => {
+                                                 const dateObj = new Date(date.date || date);
+                                                 return !isNaN(dateObj) ? dateObj.getFullYear() : null;
+                                             }))].sort()
+                                             .filter(year => year !== null);
+                                             
+                                             return `
+                                                 <div class="timeline-nav-header">Quick Navigation:</div>
+                                                 <div class="timeline-nav-years">
+                                                     ${years.map(year => `
+                                                         <a href="#year-${year}" class="timeline-nav-year">
+                                                             ${year}
+                                                         </a>
+                                                     `).join('')}
+                                                 </div>
+                                             `;
+                                         })()}
+                                     </div>
+                                     
+                                     <div class="timeline-container">
+                                         ${(() => {
+                                             // Group dates by year
+                                             const datesByYear = new Map();
+                                             implementationDates.forEach(date => {
+                                                 const dateObj = new Date(date.date || date);
+                                                 if (!isNaN(dateObj)) {  // Only process valid dates
+                                                     const year = dateObj.getFullYear();
+                                                     if (!datesByYear.has(year)) {
+                                                         datesByYear.set(year, []);
+                                                     }
+                                                     datesByYear.get(year).push(date);
+                                                 }
+                                             });
+         
+                                             // Sort years and render timeline
+                                             return Array.from(datesByYear.entries())
+                                                 .sort(([yearA], [yearB]) => yearA - yearB)
+                                                 .map(([year, dates]) => `
+                                                     <div id="year-${year}" class="timeline-year">
+                                                         <h3>${year}</h3>
+                                                         <div class="timeline-events">
+                                                             ${dates.map(date => {
+                                                                 const dateObj = new Date(date.date || date);
+                                                                 const formattedDate = dateObj.toLocaleDateString('en-US', {
+                                                                     month: 'long',
+                                                                     day: 'numeric'
+                                                                 });
+                                                                 
+                                                                 // Find related impacts for this date
+                                                                 const relatedImpacts = data.results
+                                                                     .flatMap(section => section.impacts || [])
+                                                                     .filter(impact => impact.timeline === (date.date || date));
+         
+                                                                 // Find sections related to this date
+                                                                 const relatedSections = data.results
+                                                                     .filter(section => 
+                                                                         section.impacts?.some(impact => 
+                                                                             impact.timeline === (date.date || date)
+                                                                         )
+                                                                     );
+         
+                                                                 return `
+                                                                     <div class="timeline-event">
+                                                                         <div class="timeline-date">
+                                                                             <strong>${formattedDate}</strong>
+                                                                         </div>
+                                                                         <div class="timeline-content">
+                                                                             ${relatedSections.length > 0 ? `
+                                                                                 <div class="timeline-sections">
+                                                                                     <div class="section-links">
+                                                                                         ${relatedSections.map(section => `
+                                                                                             <a href="#section-${section.number.replace(/\s+/g, '-')}" 
+                                                                                                class="section-link"
+                                                                                                onclick="showTab('sections'); showSectionTab('details');">
+                                                                                                 Section ${section.number}
+                                                                                                 ${section.funding_amounts ? (() => {
+                                                                                                     const totalFunding = Object.values(section.funding_amounts)
+                                                                                                         .reduce((sum, val) => sum + (typeof val === 'number' ? val : 0), 0);
+                                                                                                     return totalFunding > 0 ? `
+                                                                                                     <span class="funding-tag">
+                                                                                                         $${totalFunding.toLocaleString()}
+                                                                                                     </span>
+                                                                                                     ` : '';
+                                                                                                 })() : ''}
+                                                                                             </a>
+                                                                                         `).join('')}
+                                                                                     </div>
+                                                                                 </div>
+                                                                             ` : ''}
+                                                                             ${date.context ? `
+                                                                                 <div class="timeline-description">
+                                                                                     ${date.context}
+                                                                                 </div>
+                                                                             ` : ''}
+                                                                             ${relatedImpacts.length > 0 ? `
+                                                                                 <div class="timeline-impacts">
+                                                                                     <div class="impact-summary">
+                                                                                         <span class="impact-count">
+                                                                                             ${relatedImpacts.length} Impact${relatedImpacts.length !== 1 ? 's' : ''}
+                                                                                         </span>
+                                                                                         <span class="groups-count">
+                                                                                             ${new Set(relatedImpacts.flatMap(i => i.affected_groups || [])).size} Affected Groups
+                                                                                         </span>
+                                                                                     </div>
+                                                                                     <h4>Related Impacts:</h4>
+                                                                                     <ul>
+                                                                                         ${relatedImpacts.map(impact => `
+                                                                                             <li>
+                                                                                                 <span class="impact-sector">${impact.sector}</span>
+                                                                                                 <p>${impact.description}</p>
+                                                                                                 ${impact.estimated_cost ? `
+                                                                                                     <span class="impact-cost">
+                                                                                                         Estimated Cost: ${impact.estimated_cost}
+                                                                                                     </span>
+                                                                                                 ` : ''}
+                                                                                             </li>
+                                                                                         `).join('')}
+                                                                                     </ul>
+                                                                                 </div>
+                                                                             ` : ''}
+                                                                         </div>
+                                                                     </div>
+                                                                 `;
+                                                             }).join('')}
+                                                         </div>
+                                                     </div>
+                                                 `).join('')
+                                         })()}
+                                     </div>
+                                 </div>
+                             </div>
+         
+                             <div id="sections" class="tab-content">
+                                 <div class="section-tabs">
+                                     <button class="section-tab active" onclick="showSectionTab('toc')">Table of Contents</button>
+                                     <button class="section-tab" onclick="showSectionTab('details')">Section Details</button>
+                                 </div>
+         
+                                 <div class="section-stats">
+                                     <div class="stat-card">
+                                         <h3>Total Sections</h3>
+                                         <div class="stat-value">${data.sections_analyzed}</div>
+                                         <div class="stat-label">of ${data.total_sections} sections analyzed</div>
+                                     </div>
+                                     <div class="stat-card">
+                                         <h3>Total Impacts</h3>
+                                         <div class="stat-value">${totalImpacts}</div>
+                                     </div>
+                                     <div class="stat-card">
+                                         <h3>Total Funding</h3>
+                                         <div class="stat-value">$${totalNumericFunding.toLocaleString()}</div>
+                                     </div>
+                                 </div>
+         
+                                 <div id="section-toc" class="section-content active">
+                                     <div class="toc">
+                                         <h2>Table of Contents</h2>
+                                         <ul>
+                                             ${tocItems.map(item => `
+                                                 <li>
+                                                     <a href="#${item.id}" onclick="showSectionTab('details')">${item.title}</a>
+                                                     <div style="font-size: 0.9em; color: #666; padding-left: 10px;">
+                                                         ${item.summary}
+                                                     </div>
+                                                 </li>
+                                             `).join('')}
+                                         </ul>
+                                     </div>
+                                 </div>
+         
+                                 <div id="section-details" class="section-content">
+                                     ${data.results.map(section => {
+                                         const sectionId = `section-${section.number.replace(/\s+/g, '-')}`;
+                                         return `
+                                             <div class="section" id="${sectionId}">
+                                                 <div class="section-header">
+                                                     <h2>Section ${section.number}: ${section.title}</h2>
+                                                     <div class="section-meta">
+                                                         ${section.impacts?.length ? `
+                                                             <span class="meta-tag">
+                                                                 <a href="#sector-${section.impacts[0].sector.replace(/\s+/g, '-').toLowerCase()}" 
+                                                                    onclick="showTab('impacts')" 
+                                                                    class="impact-link">
+                                                                    ${section.impacts.length} Impact${section.impacts.length !== 1 ? 's' : ''}
+                                                                 </a>
+                                                             </span>
+                                                         ` : ''}
+                                                         ${section.funding_amounts ? (() => {
+                                                             const totalFunding = Object.values(section.funding_amounts)
+                                                                 .reduce((sum, val) => sum + (typeof val === 'number' ? val : 0), 0);
+                                                             return totalFunding > 0 ? `
+                                                                 <span class="meta-tag funding">
+                                                                     $${totalFunding.toLocaleString()}
+                                                                 </span>
+                                                             ` : '';
+                                                         })() : ''}
+                                                     </div>
+                                                 </div>
+                                                 
+                                                 <div class="summary-box">
+                                                     <h3>Summary</h3>
+                                                     <p>${section.summary}</p>
+                                                 </div>
+                                                 
+                                                 <h3>Key Points</h3>
+                                                 <ul>
+                                                     ${section.key_points.map(point => `<li>${point}</li>`).join('')}
+                                                 </ul>
+         
+                                                 ${section.impacts && section.impacts.length > 0 ? `
+                                                     <h3>Section Impacts</h3>
+                                                     <div class="impacts-grid">
+                                                         ${section.impacts.map(impact => `
+                                                             <div class="impact">
+                                                                 <div class="impact-header">
+                                                                     <span class="impact-sector">${impact.sector}</span>
+                                                                     <span class="impact-level" data-level="${impact.impact_level}">
+                                                                         Impact: ${impact.impact_level}/5
+                                                                     </span>
+                                                                 </div>
+                                                                 <p class="impact-description">${impact.description}</p>
+                                                                 <div class="impact-meta">
+                                                                     <div class="impact-timeline">
+                                                                         <strong>Timeline:</strong> ${impact.timeline}
+                                                                     </div>
+                                                                     <div class="impact-groups">
+                                                                         <strong>Affected Groups:</strong>
+                                                                         <div class="tags">
+                                                                             ${impact.affected_groups.map(group => 
+                                                                                 `<span class="tag">${group}</span>`
+                                                                             ).join('')}
+                                                                         </div>
+                                                                     </div>
+                                                                     ${impact.estimated_cost ? `
+                                                                         <div class="impact-cost">
+                                                                             <strong>Estimated Cost:</strong> ${impact.estimated_cost}
+                                                                         </div>
+                                                                     ` : ''}
+                                                                 </div>
+                                                             </div>
+                                                         `).join('')}
+                                                     </div>
+                                                 ` : ''}
+         
+                                                 ${section.funding_amounts ? `
+                                                     <h3>Section Funding</h3>
+                                                     <div class="funding-grid">
+                                                         ${Object.entries(section.funding_amounts).map(([purpose, amount]) => `
+                                                             <div class="funding">
+                                                                 <strong>${purpose}:</strong> ${amount}
+                                                             </div>
+                                                         `).join('')}
+                                                     </div>
+                                                 ` : ''}
+                                             </div>
+                                         `;
+                                     }).join('')}
+                                 </div>
+                             </div>
+         
+                             <div id="impacts" class="tab-content">
+                                 <div class="section">
+                                     <h2>Impact Analysis</h2>
+                                     <div class="key-metrics">
+                                         <div class="metric-card">
+                                             <h3>Total Impacts</h3>
+                                             <div class="metric-value">${totalImpacts}</div>
+                                         </div>
+                                         <div class="metric-card">
+                                             <h3>Affected Sectors</h3>
+                                             <div class="metric-value">${sectors.size}</div>
+                                         </div>
+                                         <div class="metric-card">
+                                             <h3>Average Impact Level</h3>
+                                             <div class="metric-value">
+                                                 ${(data.results.reduce((sum, section) => 
+                                                     sum + section.impacts?.reduce((s, impact) => s + impact.impact_level, 0) || 0, 0) / totalImpacts).toFixed(1)}
+                                             </div>
+                                         </div>
+                                         <div class="metric-card">
+                                             <h3>Stakeholder Groups</h3>
+                                             <div class="metric-value">${stakeholders.size}</div>
+                                         </div>
+                                     </div>
+         
+                                     <div class="impact-analysis-grid">
+                                         <div class="chart-container">
+                                             <h3>Impact Distribution by Sector</h3>
+                                             <canvas id="sectorImpactChart"></canvas>
+                                         </div>
+                                     </div>
+         
+                                     <div class="impact-index">
+                                         <h3>Quick Navigation</h3>
+                                         <div class="impact-index-list">
+                                             ${Array.from(sectors)
+                                                 .sort()
+                                                 .map(sector => `
+                                                     <a href="#sector-${sector.replace(/\s+/g, '-').toLowerCase()}" 
+                                                        class="impact-index-item">
+                                                         ${sector}
+                                                     </a>
+                                                 `).join('')}
+                                         </div>
+                                     </div>
+         
+                                     <div class="impact-details">
+                                         <h3>Detailed Impact Analysis by Sector</h3>
+                                         ${(() => {
+                                             // First, group sectors by first letter
+                                             const groupedSectors = Array.from(sectors)
+                                                 .sort()
+                                                 .reduce((acc, sector) => {
+                                                     const firstLetter = sector.charAt(0).toUpperCase();
+                                                     if (!acc[firstLetter]) {
+                                                         acc[firstLetter] = [];
+                                                     }
+                                                     acc[firstLetter].push(sector);
+                                                     return acc;
+                                                 }, {});
+         
+                                             // Then, convert the grouped object to HTML
+                                             return Object.entries(groupedSectors)
+                                                 .map(([letter, sectorList]) => `
+                                                     <div class="impact-section" id="section-${letter}">
+                                                         <h4 class="impact-letter">${letter}</h4>
+                                                         <div class="impact-sectors-grid">
+                                                             ${sectorList.map(sector => {
+                                                                 const sectorImpacts = data.results.flatMap(section => 
+                                                                     section.impacts?.filter(impact => impact.sector === sector) || []
+                                                                 );
+                                                                 const avgImpactLevel = sectorImpacts.reduce((sum, impact) => 
+                                                                     sum + impact.impact_level, 0) / sectorImpacts.length;
+                                                                 
+                                                                 return `
+                                                                     <div class="sector-impact-card" id="sector-${sector.replace(/\s+/g, '-').toLowerCase()}">
+                                                                         <div class="sector-header">
+                                                                             <h4>${sector}</h4>
+                                                                             <span class="impact-level" data-level="${Math.round(avgImpactLevel)}">
+                                                                                 Avg Impact: ${avgImpactLevel.toFixed(1)}
+                                                                             </span>
+                                                                         </div>
+                                                                         <div class="sector-stats">
+                                                                             <div class="stat">
+                                                                                 <span class="stat-label">Total Impacts</span>
+                                                                                 <span class="stat-value">${sectorImpacts.length}</span>
+                                                                             </div>
+                                                                             <div class="stat">
+                                                                                 <span class="stat-label">Affected Groups</span>
+                                                                                 <span class="stat-value">
+                                                                                     ${new Set(sectorImpacts.flatMap(impact => impact.affected_groups)).size}
+                                                                                 </span>
+                                                                             </div>
+                                                                         </div>
+                                                                         
+                                                                         <div class="sector-key-impacts">
+                                                                             <h5>Key Impacts</h5>
+                                                                             <ul>
+                                                                                 ${sectorImpacts
+                                                                                     .sort((a, b) => b.impact_level - a.impact_level)
+                                                                                     .slice(0, 3)
+                                                                                     .map(impact => {
+                                                                                         const sectionInfo = data.results.find(section => 
+                                                                                             section.impacts?.includes(impact)
+                                                                                         );
+                                                                                         return `
+                                                                                             <li>
+                                                                                                 <div class="impact-header-mini">
+                                                                                                     <span class="impact-level" data-level="${impact.impact_level}">
+                                                                                                         Level ${impact.impact_level}
+                                                                                                     </span>
+                                                                                                     ${sectionInfo ? `
+                                                                                                         <a href="#section-${sectionInfo.number.replace(/\s+/g, '-')}" 
+                                                                                                            class="section-link"
+                                                                                                            onclick="showTab('sections'); showSectionTab('details');">
+                                                                                                             Section ${sectionInfo.number}
+                                                                                                         </a>
+                                                                                                     ` : ''}
+                                                                                                 </div>
+                                                                                                 <p>${impact.description}</p>
+                                                                                                 <div class="impact-sector-tag">
+                                                                                                     ${impact.sector}
+                                                                                                 </div>
+                                                                                             </li>
+                                                                                         `;
+                                                                                     }).join('')}
+                                                                             </ul>
+                                                                         </div>
+         
+                                                                         <div class="sector-timeline">
+                                                                             <h5>Implementation Timeline</h5>
+                                                                             <div class="timeline-entries">
+                                                                                 ${Array.from(new Set(sectorImpacts.map(impact => impact.timeline)))
+                                                                                     .sort((a, b) => new Date(a) - new Date(b))
+                                                                                     .map(date => {
+                                                                                         const relatedImpacts = sectorImpacts
+                                                                                             .filter(impact => impact.timeline === date);
+                                                                                         return `
+                                                                                             <div class="timeline-entry">
+                                                                                                 <div class="timeline-content">
+                                                                                                     <span class="timeline-date">${date}</span>
+                                                                                                     <div class="timeline-impacts">
+                                                                                                         ${relatedImpacts.map(impact => {
+                                                                                                             const sectionInfo = data.results.find(section => 
+                                                                                                                 section.impacts?.includes(impact)
+                                                                                                             );
+                                                                                                             return `
+                                                                                                                 <div class="timeline-impact">
+                                                                                                                     <p>${impact.description}</p>
+                                                                                                                     ${sectionInfo ? `
+                                                                                                                         <a href="#section-${sectionInfo.number.replace(/\s+/g, '-')}" 
+                                                                                                                            class="section-link"
+                                                                                                                            onclick="showTab('sections'); showSectionTab('details');">
+                                                                                                                             Section ${sectionInfo.number}
+                                                                                                                         </a>
+                                                                                                                     ` : ''}
+                                                                                                                 </div>
+                                                                                                             `;
+                                                                                                         }).join('')}
+                                                                                                     </div>
+                                                                                                 </div>
+                                                                                             </div>
+                                                                                         `;
+                                                                                     }).join('')}
+                                                                             </div>
+                                                                         </div>
+                                                                     </div>
+                                                                 `;
+                                                             }).join('')}
+                                                         </div>
+                                                     </div>
+                                                 `).join('');
+                                         })()}
+                                     </div>
+                                 </div>
+                             </div>
+         
+                             <div id="funding" class="tab-content">
+                                 <div class="section">
+                                     <div class="funding-header">
+                                         <h2>Funding Analysis</h2>
+                                         <div class="funding-overview">
+                                             <div class="funding-stat">
+                                                 <h3>Total Allocated Funding</h3>
+                                                 <div class="stat-value">$${totalNumericFunding.toLocaleString()}</div>
+                                             </div>
+                                             <div class="funding-stat">
+                                                 <h3>Sections with Funding</h3>
+                                                 <div class="stat-value">
+                                                     ${data.results.filter(section => section.funding_amounts).length}
+                                                 </div>
+                                             </div>
+                                             <div class="funding-stat">
+                                                 <h3>Average Funding per Section</h3>
+                                                 <div class="stat-value">
+                                                     $${Math.round(totalNumericFunding / 
+                                                         data.results.filter(section => section.funding_amounts).length
+                                                     ).toLocaleString()}
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+         
+                                     <div class="funding-sections">
+                                         <h3>Funding by Section</h3>
+                                         <div class="funding-grid">
+                                             ${data.results
+                                                 .filter(section => section.funding_amounts)
+                                                 .sort((a, b) => {
+                                                     const aTotal = Object.values(a.funding_amounts)
+                                                         .reduce((sum, val) => sum + (typeof val === 'number' ? val : 0), 0);
+                                                     const bTotal = Object.values(b.funding_amounts)
+                                                         .reduce((sum, val) => sum + (typeof val === 'number' ? val : 0), 0);
+                                                     return bTotal - aTotal;
+                                                 })
+                                                 .map(section => {
+                                                     const sectionTotal = Object.values(section.funding_amounts)
+                                                         .reduce((sum, val) => sum + (typeof val === 'number' ? val : 0), 0);
+                                                     return sectionTotal > 0 ? `
+                                                         <div class="funding-section-card">
+                                                             <div class="funding-section-header">
+                                                                 <h4>
+                                                                     <a href="#section-${section.number.replace(/\s+/g, '-')}"
+                                                                        onclick="showTab('sections'); showSectionTab('details');">
+                                                                        Section ${section.number}
+                                                                     </a>
+                                                                 </h4>
+                                                                 <div class="funding-total">$${sectionTotal.toLocaleString()}</div>
+                                                             </div>
+                                                             <p class="funding-title">${section.title}</p>
+                                                             <div class="funding-allocations">
+                                                                 ${Object.entries(section.funding_amounts)
+                                                                     .filter(([_, amount]) => typeof amount === 'number' && amount > 0)
+                                                                     .map(([purpose, amount]) => `
+                                                                         <div class="funding-allocation">
+                                                                             <div class="allocation-purpose">${purpose}</div>
+                                                                             <div class="allocation-amount">$${amount.toLocaleString()}</div>
+                                                                         </div>
+                                                                     `).join('')}
+                                                             </div>
+                                                         </div>
+                                                     ` : '';
+                                                 }).join('')}
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+         
+                             <div id="voting" class="tab-content">
+                                 <div class="section">
+                                     <div class="vote-header">
+                                         <h2>Congressional Voting Results</h2>
+                                         <p class="vote-summary">Analysis of the voting patterns and outcomes for the Inflation Reduction Act across both chambers of Congress.</p>
+                                     </div>
+
+                                     <div class="vote-chambers">
+                                         <div class="chamber-card">
+                                             <div class="chamber-header">
+                                                 <h3>House Vote</h3>
+                                                 <span class="vote-date">August 12, 2022</span>
+                                             </div>
+                                             <div class="vote-stats">
+                                                 <div class="stat-box">
+                                                     <span class="stat-label">Yeas</span>
+                                                     <span class="stat-value">220</span>
+                                                 </div>
+                                                 <div class="stat-box">
+                                                     <span class="stat-label">Nays</span>
+                                                     <span class="stat-value">207</span>
+                                                 </div>
+                                                 <div class="stat-box passed">
+                                                     <span class="stat-label">Result</span>
+                                                     <span class="stat-value">Passed</span>
+                                                 </div>
+                                             </div>
+
+                                             <div class="party-breakdown">
+                                                 <h4>Party Breakdown</h4>
+                                                 <div class="party-stats">
+                                                     <div class="party-stat party-dem">
+                                                         <span class="party-stat-label">Democrats</span>
+                                                         <span class="party-stat-value">220-0</span>
+                                                     </div>
+                                                     <div class="party-stat party-rep">
+                                                         <span class="party-stat-label">Republicans</span>
+                                                         <span class="party-stat-value">0-207</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+
+                                             <div class="vote-info">
+                                                 <div class="vote-info-item">
+                                                     <span class="vote-info-icon">ℹ️</span>
+                                                     <span class="vote-info-text">Strict party-line vote with all Democrats in favor and all Republicans against</span>
+                                                 </div>
+                                                 <div class="vote-info-item">
+                                                     <span class="vote-info-icon">⚪</span>
+                                                     <span class="vote-info-text">4 members did not vote (3 Republicans, 1 Democrat)</span>
+                                                 </div>
+                                             </div>
+
+                                             <div class="vote-visualization">
+                                                 <div class="vote-chart" id="houseVoteChart"></div>
+                                             </div>
+
+                                             <div class="member-lists">
+                                                 <div class="member-list-toggle" onclick="toggleMemberList('houseYeas')">
+                                                     Yea Votes (220 Members)
+                                                 </div>
+                                                 <div class="member-list" id="houseYeas">
+                                                     <div class="member-list-grid">
+                                                         <!-- Member items will be populated by JavaScript -->
+                                                     </div>
+                                                 </div>
+
+                                                 <div class="member-list-toggle" onclick="toggleMemberList('houseNays')">
+                                                     Nay Votes (207 Members)
+                                                 </div>
+                                                 <div class="member-list" id="houseNays">
+                                                     <div class="member-list-grid">
+                                                         <!-- Member items will be populated by JavaScript -->
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+
+                                         <div class="chamber-card">
+                                             <div class="chamber-header">
+                                                 <h3>Senate Vote</h3>
+                                                 <span class="vote-date">August 7, 2022</span>
+                                             </div>
+                                             <div class="vote-stats">
+                                                 <div class="stat-box">
+                                                     <span class="stat-label">Yeas</span>
+                                                     <span class="stat-value">51</span>
+                                                 </div>
+                                                 <div class="stat-box">
+                                                     <span class="stat-label">Nays</span>
+                                                     <span class="stat-value">50</span>
+                                                 </div>
+                                                 <div class="stat-box passed">
+                                                     <span class="stat-label">Result</span>
+                                                     <span class="stat-value">Passed</span>
+                                                 </div>
+                                             </div>
+
+                                             <div class="party-breakdown">
+                                                 <h4>Party Breakdown</h4>
+                                                 <div class="party-stats">
+                                                     <div class="party-stat party-dem">
+                                                         <span class="party-stat-label">Democrats</span>
+                                                         <span class="party-stat-value">48-0</span>
+                                                     </div>
+                                                     <div class="party-stat party-rep">
+                                                         <span class="party-stat-label">Republicans</span>
+                                                         <span class="party-stat-value">0-50</span>
+                                                     </div>
+                                                     <div class="party-stat party-ind">
+                                                         <span class="party-stat-label">Independents</span>
+                                                         <span class="party-stat-value">2-0</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+
+                                             <div class="vote-info">
+                                                 <div class="vote-info-item">
+                                                     <span class="vote-info-icon">⚖️</span>
+                                                     <span class="vote-info-text">Vice President Harris cast the tie-breaking vote</span>
+                                                 </div>
+                                                 <div class="vote-info-item">
+                                                     <span class="vote-info-icon">ℹ️</span>
+                                                     <span class="vote-info-text">Both Independent senators (Bernie Sanders and Angus King) voted in favor</span>
+                                                 </div>
+                                             </div>
+
+                                             <div class="vote-visualization">
+                                                 <div class="vote-chart" id="senateVoteChart"></div>
+                                             </div>
+
+                                             <div class="member-lists">
+                                                 <div class="member-list-toggle" onclick="toggleMemberList('senateYeas')">
+                                                     Yea Votes (51 Members)
+                                                 </div>
+                                                 <div class="member-list" id="senateYeas">
+                                                     <div class="member-list-grid">
+                                                         <!-- Member items will be populated by JavaScript -->
+                                                     </div>
+                                                 </div>
+
+                                                 <div class="member-list-toggle" onclick="toggleMemberList('senateNays')">
+                                                     Nay Votes (50 Members)
+                                                 </div>
+                                                 <div class="member-list" id="senateNays">
+                                                     <div class="member-list-grid">
+                                                         <!-- Member items will be populated by JavaScript -->
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+
+                                     <div class="vote-timeline">
+                                         <h3>Voting Timeline</h3>
+                                         <div class="timeline">
+                                             <div class="timeline-item">
+                                                 <div class="timeline-date">August 7, 2022</div>
+                                                 <div class="timeline-content">
+                                                     <h4>Senate Vote</h4>
+                                                     <p>The Senate passed the bill with Vice President Harris casting the tie-breaking vote (51-50).</p>
+                                                     <div class="info-item">
+                                                         <span class="info-text">All Democrats and Independents voted in favor, while all Republicans opposed.</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             <div class="timeline-item">
+                                                 <div class="timeline-date">August 12, 2022</div>
+                                                 <div class="timeline-content">
+                                                     <h4>House Vote</h4>
+                                                     <p>The House passed the bill with a vote of 220-207.</p>
+                                                     <div class="info-item">
+                                                         <span class="info-text">Strict party-line vote with all present Democrats voting in favor and all present Republicans voting against.</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             <div class="timeline-item">
+                                                 <div class="timeline-date">August 16, 2022</div>
+                                                 <div class="timeline-content">
+                                                     <h4>Presidential Signature</h4>
+                                                     <p>President Biden signed the Inflation Reduction Act into law.</p>
+                                                     <div class="info-item">
+                                                         <span class="info-text">The bill became Public Law No: 117-169</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+         
+                             <div id="comments" class="tab-content">
+                                 <div class="section">
+                                     <h2>Comments</h2>
+                                     <div class="empty-state">
+                                         <p>No comments available for this analysis.</p>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 `;
+         
+                 document.getElementById('content').innerHTML = html;
+                 initializeCharts(data, stakeholderMetrics);
+         
+                 // Show/hide back to top button
+                 window.onscroll = function() {
+                     const backToTop = document.getElementById('backToTop');
+                     if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+                         backToTop.style.display = 'block';
+                     } else {
+                         backToTop.style.display = 'none';
+                     }
+                 };
+             } catch (error) {
+                 const errorDiv = document.getElementById('error');
+                 errorDiv.style.display = 'block';
+                 errorDiv.innerHTML = `
+                     <h2>Error Loading Analysis</h2>
+                     <p>${error.message}</p>
+                     <p>Make sure you're running the server from the analysis_results directory:</p>
+                     <pre>cd analysis_results && python3 -m http.server 8000</pre>
+                     <p>Then visit: <a href="http://localhost:8000/view_analysis.html">http://localhost:8000/view_analysis.html</a></p>
+                 `;
+                 document.getElementById('content').innerHTML = '';
+             }
+         }
+         
+         function showTab(tabId) {
+             // Hide all tab contents
+             document.querySelectorAll('.tab-content').forEach(content => {
+                 content.classList.remove('active');
+             });
+             
+             // Deactivate all tabs
+             document.querySelectorAll('.tab').forEach(tab => {
+                 tab.classList.remove('active');
+             });
+             
+             // Show selected tab content
+             document.getElementById(tabId).classList.add('active');
+             
+             // Activate selected tab
+             document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+         }
+         
+         function exportToPDF() {
+             const element = document.getElementById('content');
+             const opt = {
+                 margin: 1,
+                 filename: 'bill-analysis.pdf',
+                 image: { type: 'jpeg', quality: 0.98 },
+                 html2canvas: { scale: 2 },
+                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+             };
+             html2pdf().set(opt).from(element).save();
+         }
+         
+         function getImpactClass(level) {
+             if (level >= 4) return 'high-impact';
+             if (level >= 2.5) return 'medium-impact';
+             return 'low-impact';
+         }
+         
+         function showStakeholderTab(tabId) {
+             // Hide all stakeholder contents
+             document.querySelectorAll('.stakeholder-content').forEach(content => {
+                 content.classList.remove('active');
+             });
+             
+             // Deactivate all stakeholder tabs
+             document.querySelectorAll('.stakeholder-tab').forEach(tab => {
+                 tab.classList.remove('active');
+             });
+             
+             // Show selected stakeholder content
+             document.getElementById(`stakeholder-${tabId}`).classList.add('active');
+             
+             // Activate selected stakeholder tab
+             document.querySelector(`.stakeholder-tab[onclick="showStakeholderTab('${tabId}')"]`).classList.add('active');
+         }
+         
+         function showSectionTab(tabId) {
+             document.querySelectorAll('.section-content').forEach(content => {
+                 content.classList.remove('active');
+             });
+             
+             document.querySelectorAll('.section-tab').forEach(tab => {
+                 tab.classList.remove('active');
+             });
+             
+             document.getElementById(`section-${tabId}`).classList.add('active');
+             document.querySelector(`.section-tab[onclick="showSectionTab('${tabId}')"]`).classList.add('active');
+         }
+         
+         function initializeCharts(data, stakeholderMetrics) {
+             // Prepare data for sector impact chart
+             const sectorData = {};
+             data.results.forEach(section => {
+                 section.impacts?.forEach(impact => {
+                     sectorData[impact.sector] = (sectorData[impact.sector] || 0) + 1;
+                 });
+             });
+         
+             // Sort sectors by impact count
+             const sortedSectors = Object.entries(sectorData)
+                 .sort((a, b) => b[1] - a[1])
+                 .reduce((obj, [key, value]) => {
+                     obj[key] = value;
+                     return obj;
+                 }, {});
+         
+             // Calculate optimal bar thickness and spacing
+             const numSectors = Object.keys(sortedSectors).length;
+             const barThickness = Math.min(25, Math.max(15, 500 / numSectors));
+             
+             new Chart(document.getElementById('sectorImpactChart'), {
+                 type: 'bar',
+                 data: {
+                     labels: Object.keys(sortedSectors),
+                     datasets: [{
+                         label: 'Number of Impacts',
+                         data: Object.values(sortedSectors),
+                         backgroundColor: 'rgba(44, 82, 130, 0.8)',
+                         borderColor: 'rgba(44, 82, 130, 1)',
+                         borderWidth: 1,
+                         barThickness: barThickness // Dynamic thickness
+                     }]
+                 },
+                 options: {
+                     responsive: true,
+                     maintainAspectRatio: false,
+                     indexAxis: 'y',
+                     plugins: {
+                         legend: {
+                             display: false
+                         },
+                         tooltip: {
+                             callbacks: {
+                                 label: function(context) {
+                                     return `Impacts: ${context.raw}`;
+                                 }
+                             }
+                         }
+                     },
+                     scales: {
+                         y: {
+                             ticks: {
+                                 font: {
+                                     size: 11
+                                 },
+                                 autoSkip: false,
+                                 padding: 10, // Increase padding
+                             },
+                             grid: {
+                                 display: false
+                             },
+                             afterFit: function(scaleInstance) {
+                                 scaleInstance.height = scaleInstance.height * 1.2; // Increase height by 20%
+                             }
+                         },
+                         x: {
+                             beginAtZero: true,
+                             ticks: {
+                                 stepSize: 1,
+                                 font: {
+                                     size: 12
+                                 }
+                             },
+                             grid: {
+                                 color: 'rgba(0, 0, 0, 0.1)'
+                             },
+                             title: {
+                                 display: true,
+                                 text: 'Number of Impacts',
+                                 font: {
+                                     size: 14
+                                 },
+                                 padding: {
+                                     top: 10
+                                 }
+                             }
+                         }
+                     },
+                     layout: {
+                         padding: {
+                             left: 25, // Increase left padding
+                             right: 30,
+                             top: 20,
+                             bottom: 20
+                         }
+                     }
+                 }
+             });
+         
+             // Prepare data for stakeholder bubble chart
+             const stakeholderBubbleData = Array.from(stakeholderMetrics.entries()).map(([stakeholder, metrics]) => {
+                 const avgImpact = metrics.totalImpactLevel / metrics.count;
+                 return {
+                     label: stakeholder,
+                     x: metrics.sectors.size, // Number of sectors affected
+                     y: metrics.count,        // Number of impacts
+                     r: avgImpact * 5,       // Bubble size based on impact level
+                     avgImpact: avgImpact,
+                     totalImpacts: metrics.count,
+                     sectors: metrics.sectors.size
+                 };
+             });
+         
+             new Chart(document.getElementById('stakeholderImpactChart'), {
+                 type: 'bubble',
+                 data: {
+                     datasets: [{
+                         data: stakeholderBubbleData,
+                         backgroundColor: stakeholderBubbleData.map(d => 
+                             `rgba(44, 82, 130, ${0.3 + (d.avgImpact / 5) * 0.7})`
+                         ),
+                         borderColor: 'rgba(44, 82, 130, 1)',
+                         borderWidth: 1
+                     }]
+                 },
+                 options: {
+                     responsive: true,
+                     maintainAspectRatio: false,
+                     scales: {
+                         x: {
+                             title: {
+                                 display: true,
+                                 text: 'Number of Affected Sectors',
+                                 font: { size: 12 }
+                             },
+                             grid: {
+                                 color: 'rgba(0, 0, 0, 0.1)'
+                             }
+                         },
+                         y: {
+                             title: {
+                                 display: true,
+                                 text: 'Number of Impacts',
+                                 font: { size: 12 }
+                             },
+                             grid: {
+                                 color: 'rgba(0, 0, 0, 0.1)'
+                             }
+                         }
+                     },
+                     plugins: {
+                         legend: {
+                             display: false
+                         },
+                         tooltip: {
+                             callbacks: {
+                                 label: function(context) {
+                                     const data = context.raw;
+                                     return [
+                                         `Stakeholder: ${data.label}`,
+                                         `Impacts: ${data.totalImpacts}`,
+                                         `Sectors: ${data.sectors}`,
+                                         `Avg Impact: ${data.avgImpact.toFixed(1)}`
+                                     ];
+                                 }
+                             }
+                         }
+                     }
+                 }
+             });
+         
+             // Create network visualization
+             const elements = {
+                 nodes: [],
+                 edges: []
+             };
+         
+             // Add stakeholder nodes
+             Array.from(stakeholderMetrics.entries()).forEach(([stakeholder, metrics]) => {
+                 const avgImpact = metrics.totalImpactLevel / metrics.count;
+                 elements.nodes.push({
+                     data: {
+                         id: `stakeholder-${stakeholder}`,
+                         label: stakeholder,
+                         type: 'stakeholder',
+                         size: metrics.count,
+                         color: `rgba(26, 43, 78, ${0.3 + (avgImpact / 5) * 0.7})`,
+                         impact: avgImpact.toFixed(1)
+                     }
+                 });
+             });
+         
+             // Add section nodes and edges
+             data.results.forEach(section => {
+                 if (section.impacts && section.impacts.length > 0) {
+                     const sectionId = `section-${section.number}`;
+                     elements.nodes.push({
+                         data: {
+                             id: sectionId,
+                             label: `Section ${section.number}`,
+                             type: 'section',
+                             size: section.impacts.length,
+                             color: '#4a5568'
+                         }
+                     });
+         
+                     section.impacts.forEach(impact => {
+                         impact.affected_groups.forEach(group => {
+                             const stakeholderId = `stakeholder-${group}`;
+                             elements.edges.push({
+                                 data: {
+                                     source: sectionId,
+                                     target: stakeholderId,
+                                     weight: impact.impact_level,
+                                     color: `rgba(44, 82, 130, ${0.3 + (impact.impact_level / 5) * 0.7})`
+                                 }
+                             });
+                         });
+                     });
+                 }
+             });
+         
+             // Initialize Cytoscape
+             const cy = cytoscape({
+                 container: document.getElementById('networkChart'),
+                 elements: elements,
+                 style: [
+                     {
+                         selector: 'node',
+                         style: {
+                             'label': 'data(label)',
+                             'background-color': 'data(color)',
+                             'width': function(ele) {
+                                 // Make nodes smaller overall
+                                 const size = ele.data('size');
+                                 const impact = ele.data('impact');
+                                 return ele.data('type') === 'stakeholder' ? 
+                                     15 + (impact * 5) : // Smaller stakeholder nodes
+                                     15 + (size * 2);    // Smaller section nodes
+                             },
+                             'height': function(ele) {
+                                 // Ensure height matches width exactly
+                                 return ele.style('width');
+                             },
+                             'font-size': '10px',
+                             'color': '#fff',
+                             'text-outline-color': '#000',
+                             'text-outline-width': 1,
+                             'text-valign': 'bottom',
+                             'text-halign': 'center',
+                             'text-margin-y': 8,
+                             'z-index': 10,
+                             'shape': 'ellipse' // Ensure circular shape
+                         }
+                     },
+                     {
+                         selector: 'edge',
+                         style: {
+                             'width': 'mapData(weight, 1, 5, 0.5, 2)', // Thinner edges
+                             'line-color': 'data(color)',
+                             'curve-style': 'unbundled-bezier', // Better edge routing
+                             'opacity': 0.6,
+                             'z-index': 1,
+                             'control-point-distances': 50,
+                             'control-point-weights': 0.5
+                         }
+                     },
+                     {
+                         selector: 'node:selected',
+                         style: {
+                             'border-width': 3,
+                             'border-color': '#FFA500',
+                             'border-opacity': 0.8,
+                             'background-opacity': 1
+                         }
+                     },
+                     {
+                         selector: 'edge:selected',
+                         style: {
+                             'width': 4,
+                             'opacity': 1,
+                             'line-color': '#FFA500'
+                         }
+                     },
+                     {
+                         selector: '.highlighted',
+                         style: {
+                             'background-opacity': 1,
+                             'opacity': 1,
+                             'z-index': 999
+                         }
+                     },
+                     {
+                         selector: '.faded',
+                         style: {
+                             'background-opacity': 0.3,
+                             'opacity': 0.3
+                         }
+                     }
+                 ],
+                 layout: {
+                     name: 'cola', // Use cola layout for better spacing
+                     animate: true, // Enable animation
+                     refresh: 1, // Refresh rate of animation
+                     maxSimulationTime: 3000, // Max animation time
+                     nodeSpacing: function(node) {
+                         return 30; // Minimum spacing between nodes
+                     },
+                     padding: 50,
+                     randomize: false,
+                     avoidOverlap: true,
+                     fit: true,
+                     infinite: false
+                 }
+             });
+         
+             // Add continuous animation
+             let layout = cy.layout({
+                 name: 'cola',
+                 infinite: true,
+                 fit: false,
+                 animate: true,
+                 refresh: 1,
+                 maxSimulationTime: 3000,
+                 nodeSpacing: function(node) {
+                     return 30;
+                 },
+                 edgeLength: function(edge) {
+                     return 100;
+                 }
+             });
+         
+             // Start the layout
+             layout.run();
+         
+             // Add zoom controls
+             cy.on('mouseover', 'node', function(e) {
+                 e.target.style('cursor', 'pointer');
+             });
+         
+             // Fit the viewport on load
+             cy.fit(50); // 50px padding
+         
+             // Center the graph
+             cy.center();
+         
+             // Add viewport boundary padding
+             cy.style()
+                 .selector('core')
+                 .style({
+                     'active-bg-opacity': 0
+                 })
+                 .update();
+         
+             // Add loading state
+             cy.on('layoutstart', function() {
+                 const loading = document.createElement('div');
+                 loading.className = 'network-loading';
+                 loading.textContent = 'Organizing network...';
+                 document.getElementById('networkChart').appendChild(loading);
+             });
+         
+             cy.on('layoutstop', function() {
+                 const loading = document.querySelector('.network-loading');
+                 if (loading) loading.remove();
+             });
+         
+             // Improve interactions
+             cy.on('tap', 'node', function(e) {
+                 const node = e.target;
+                 const neighborhood = node.neighborhood().add(node);
+                 const others = cy.elements().not(neighborhood);
+                 
+                 // Highlight selected node and its connections
+                 neighborhood.addClass('highlighted');
+                 others.addClass('faded');
+                 
+                 // Show detailed information panel
+                 showNodeDetails(node);
+             });
+         
+             cy.on('tap', function(e) {
+                 if (e.target === cy) {
+                     // Reset styles when clicking background
+                     cy.elements().removeClass('highlighted faded');
+                     hideNodeDetails();
+                 }
+             });
+         
+             // Add these functions for showing/hiding node details
+             function showNodeDetails(node) {
+                 const data = node.data();
+                 let detailsHtml = '';
+                 
+                 if (data.type === 'stakeholder') {
+                     const connectedSections = cy.edges(`[target = "${data.id}"]`).map(edge => 
+                         edge.source().data('label')
+                     );
+                     
+                     detailsHtml = `
+                         <div class="network-details">
+                             <h4>${data.label}</h4>
+                             <div class="detail-stats">
+                                 <div class="detail-stat">
+                                     <span class="stat-label">Impact Level</span>
+                                     <span class="stat-value impact-level" data-level="${Math.round(data.impact)}">
+                                         ${data.impact}
+                                     </span>
+                                 </div>
+                                 <div class="detail-stat">
+                                     <span class="stat-label">Total Impacts</span>
+                                     <span class="stat-value">${data.size}</span>
+                                 </div>
+                             </div>
+                             <div class="connected-sections">
+                                 <h5>Connected Sections</h5>
+                                 <div class="section-list">
+                                     ${connectedSections.join(', ')}
+                                 </div>
+                             </div>
+                         </div>
+                     `;
+                 } else {
+                     const connectedStakeholders = cy.edges(`[source = "${data.id}"]`).map(edge => 
+                         edge.target().data('label')
+                     );
+                     
+                     detailsHtml = `
+                         <div class="network-details">
+                             <h4>${data.label}</h4>
+                             <div class="detail-stats">
+                                 <div class="detail-stat">
+                                     <span class="stat-label">Total Impacts</span>
+                                     <span class="stat-value">${data.size}</span>
+                                 </div>
+                             </div>
+                             <div class="connected-stakeholders">
+                                 <h5>Affected Stakeholders</h5>
+                                 <div class="stakeholder-list">
+                                     ${connectedStakeholders.join(', ')}
+                                 </div>
+                             </div>
+                         </div>
+                     `;
+                 }
+                 
+                 // Update or create details panel
+                 let detailsPanel = document.querySelector('.network-details-panel');
+                 if (!detailsPanel) {
+                     detailsPanel = document.createElement('div');
+                     detailsPanel.className = 'network-details-panel';
+                     document.getElementById('networkChart').appendChild(detailsPanel);
+                 }
+                 detailsPanel.innerHTML = detailsHtml;
+                 detailsPanel.style.display = 'block';
+             }
+         
+             function hideNodeDetails() {
+                 const detailsPanel = document.querySelector('.network-details-panel');
+                 if (detailsPanel) {
+                     detailsPanel.style.display = 'none';
+                 }
+             }
+         
+             // Add filter functionality
+             document.getElementById('networkFilter').addEventListener('change', function(e) {
+                 const value = e.target.value;
+                 cy.edges().forEach(edge => {
+                     const weight = edge.data('weight');
+                     let visible = true;
+                     switch(value) {
+                         case 'high':
+                             visible = weight >= 4;
+                             break;
+                         case 'medium':
+                             visible = weight >= 2 && weight <= 3;
+                             break;
+                         case 'low':
+                             visible = weight === 1;
+                             break;
+                     }
+                     edge.style('display', visible ? 'element' : 'none');
+                 });
+             });
+         }
+         
+         function initializeNetwork(data) {
+             const nodeColors = {
+                 'Government': '#2563eb', // Darker blue
+                 'Business': '#16a34a', // Darker green
+                 'NGO': '#ea580c', // Darker orange
+                 'Public': '#7c3aed', // Darker purple
+                 'Academic': '#db2777' // Darker pink
+             };
+         
+             const impactSizes = {
+                 1: 35,
+                 2: 45,
+                 3: 55,
+                 4: 65,
+                 5: 75
+             };
+         
+             const cy = cytoscape({
+                 container: document.getElementById('networkContainer'),
+                 elements: data,
+                 style: [
+                     {
+                         selector: 'node',
+                         style: {
+                             'label': 'data(label)',
+                             'width': 'data(size)',
+                             'height': 'data(size)',
+                             'background-color': 'data(color)',
+                             'font-size': '13px',
+                             'color': '#1a202c',
+                             'text-wrap': 'wrap',
+                             'text-max-width': '120px',
+                             'text-valign': 'center',
+                             'text-halign': 'center',
+                             'border-width': 2,
+                             'border-color': '#fff',
+                             'text-outline-width': 3,
+                             'text-outline-color': '#fff',
+                             'text-outline-opacity': 1,
+                             'font-weight': 500
+                         }
+                     },
+                     {
+                         selector: 'edge',
+                         style: {
+                             'width': 'data(weight)',
+                             'line-color': '#64748b', // Darker edge color
+                             'curve-style': 'bezier',
+                             'opacity': 0.8,
+                             'target-arrow-shape': 'triangle',
+                             'arrow-scale': 1,
+                             'target-arrow-color': '#64748b'
+                         }
+                     },
+                     {
+                         selector: 'node.highlighted',
+                         style: {
+                             'border-width': 3,
+                             'border-color': '#fbbf24',
+                             'text-outline-color': '#fff',
+                             'text-outline-width': 4,
+                             'font-weight': 600,
+                             'z-index': 999
+                         }
+                     },
+                     {
+                         selector: 'edge.highlighted',
+                         style: {
+                             'line-color': '#fbbf24',
+                             'target-arrow-color': '#fbbf24',
+                             'opacity': 1,
+                             'width': 'data(weight)',
+                             'z-index': 999
+                         }
+                     },
+                     {
+                         selector: '.faded',
+                         style: {
+                             'opacity': 0.15
+                         }
+                     }
+                 ],
+                 layout: {
+                     name: 'cola',
+                     nodeSpacing: 100,
+                     edgeLength: 250,
+                     animate: true,
+                     randomize: false,
+                     maxSimulationTime: 2000,
+                     padding: 50,
+                     edgeSymDiffLength: 10,
+                     edgeJaccardLength: 100,
+                     animationEasing: 'ease-out',
+                     animationDuration: 1000,
+                     refresh: 1,
+                     fit: true
+                 }
+             });
+         
+             // Add zoom controls
+             cy.on('zoom', function() {
+                 const zoom = cy.zoom();
+                 cy.style()
+                     .selector('node')
+                     .style({
+                         'font-size': Math.max(13, 13 / zoom) + 'px',
+                         'text-outline-width': Math.max(3, 3 / zoom)
+                     })
+                     .update();
+             });
+         
+             // Add background grid (optional - uncomment if you want a grid)
+             /*
+             cy.style()
+                 .selector('core')
+                 .style({
+                     'background-image': 'data:image/svg+xml;base64,' + btoa(`
+                         <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                             <path d="M 0 0 L 40 0 40 40 0 40" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+                         </svg>
+                     `),
+                     'background-opacity': 0.5
+                 })
+                 .update();
+             */
+         
+             // Rest of the code (tooltip, legend, etc.) remains the same
+             // ... existing code ...
+         
+             // Create legend
+             const legend = document.createElement('div');
+             legend.className = 'network-legend';
+             legend.innerHTML = `
+                 <div style="margin-bottom: 10px"><strong>Stakeholder Types</strong></div>
+                 ${Object.entries(nodeColors).map(([type, color]) => `
+                     <div class="legend-item">
+                         <div class="legend-color" style="background: ${color}"></div>
+                         <span>${type}</span>
+                     </div>
+                 `).join('')}
+                 <div style="margin: 10px 0"><strong>Impact Levels</strong></div>
+                 <div style="display: flex; align-items: center; gap: 5px">
+                     <div style="width: 10px; height: 10px; border-radius: 50%"></div>
+                     <div style="width: 15px; height: 15px; border-radius: 50%"></div>
+                     <div style="width: 20px; height: 20px; border-radius: 50%"></div>
+                     <span style="margin-left: 5px">Size indicates impact level (1-5)</span>
+                 </div>
+             `;
+             document.getElementById('networkContainer').appendChild(legend);
+         
+             // Create tooltip
+             const tooltip = document.createElement('div');
+             tooltip.className = 'network-tooltip';
+             document.getElementById('networkContainer').appendChild(tooltip);
+         
+             // Interaction handlers
+             cy.on('mouseover', 'node', function(e) {
+                 const node = e.target;
+                 const stakeholder = node.data();
+                 
+                 // Show tooltip with navigation
+                 tooltip.innerHTML = `
+                     <div class="tooltip-header">
+                         <strong>${stakeholder.label}</strong>
+                         <div style="margin-top: 4px;">
+                             <span class="tag">${stakeholder.type}</span>
+                             <span class="impact-level" data-level="${stakeholder.impact}">Impact Level ${stakeholder.impact}</span>
+                         </div>
+                     </div>
+                     <div class="tooltip-content">
+                         ${stakeholder.description ? `<p>${stakeholder.description}</p>` : ''}
+                         ${stakeholder.key_concerns ? `
+                             <div style="margin-top: 8px;">
+                                 <strong>Key Concerns:</strong> ${stakeholder.key_concerns[0]}
+                                 ${stakeholder.key_concerns.length > 1 ? ' ...' : ''}
+                             </div>
+                         ` : ''}
+                     </div>
+                     <div class="tooltip-nav">
+                         <a href="#stakeholder-${stakeholder.id}" class="tooltip-link" onclick="event.stopPropagation();">
+                             View Details
+                         </a>
+                         <a href="#impact-${stakeholder.id}" class="tooltip-link" onclick="event.stopPropagation();">
+                             Impact Analysis
+                         </a>
+                         <a href="#recommendations-${stakeholder.id}" class="tooltip-link" onclick="event.stopPropagation();">
+                             Recommendations
+                         </a>
+                     </div>
+                 `;
+                 tooltip.style.display = 'block';
+                 tooltip.style.left = e.renderedPosition.x + 'px';
+                 tooltip.style.top = e.renderedPosition.y + 'px';
+         
+                 // Highlight connected nodes
+                 const neighborhood = node.neighborhood().add(node);
+                 cy.elements().addClass('faded');
+                 neighborhood.removeClass('faded').addClass('highlighted');
+             });
+         
+             cy.on('mouseout', 'node', function() {
+                 tooltip.style.display = 'none';
+                 cy.elements().removeClass('faded highlighted');
+             });
+         
+             cy.on('tap', 'node', function(evt) {
+                 const node = evt.target;
+                 const stakeholderId = node.data('id');
+                 
+                 // Check which section exists and scroll to it
+                 const sections = [
+                     'stakeholder-' + stakeholderId,
+                     'impact-' + stakeholderId,
+                     'recommendations-' + stakeholderId
+                 ];
+                 
+                 for (const sectionId of sections) {
+                     const section = document.getElementById(sectionId);
+                     if (section) {
+                         section.scrollIntoView({ behavior: 'smooth' });
+                         section.style.animation = 'highlight 2s';
+                         break;
+                     }
+                 }
+             });
+         
+             // Add mousemove handler to keep tooltip near cursor
+             cy.on('mousemove', 'node', function(e) {
+                 const tooltipWidth = tooltip.offsetWidth;
+                 const tooltipHeight = tooltip.offsetHeight;
+                 const containerRect = cy.container().getBoundingClientRect();
+                 
+                 let left = e.renderedPosition.x;
+                 let top = e.renderedPosition.y;
+                 
+                 // Adjust position to keep tooltip within container
+                 if (left + tooltipWidth > containerRect.width) {
+                     left = left - tooltipWidth - 10;
+                 }
+                 if (top + tooltipHeight > containerRect.height) {
+                     top = top - tooltipHeight - 10;
+                 }
+                 
+                 tooltip.style.left = left + 'px';
+                 tooltip.style.top = top + 'px';
+             });
+         
+             // Add sorting functionality
+             document.querySelectorAll('.network-sort-btn').forEach(btn => {
+                 btn.addEventListener('click', function() {
+                     document.querySelectorAll('.network-sort-btn').forEach(b => b.classList.remove('active'));
+                     this.classList.add('active');
+                     
+                     const sortType = this.dataset.sort;
+                     let layout;
+                     
+                     switch(sortType) {
+                         case 'impact':
+                             layout = cy.layout({
+                                 name: 'concentric',
+                                 concentric: node => node.data('impact'),
+                                 levelWidth: () => 1,
+                                 animate: true,
+                                 padding: 30
+                             });
+                             break;
+                         case 'type':
+                             layout = cy.layout({
+                                 name: 'cola',
+                                 nodeSpacing: 80,
+                                 groups: node => node.data('type'),
+                                 animate: true,
+                                 padding: 30
+                             });
+                             break;
+                         case 'connections':
+                             layout = cy.layout({
+                                 name: 'cola',
+                                 nodeSpacing: 80,
+                                 alignment: {vertical: true},
+                                 sort: (a, b) => b.degree() - a.degree(),
+                                 animate: true,
+                                 padding: 30
+                             });
+                             break;
+                     }
+                     
+                     layout.run();
+                 });
+             });
+         
+             // Initial layout
+             cy.layout({
+                 name: 'cola',
+                 nodeSpacing: 80,
+                 edgeLength: 200,
+                 animate: true,
+                 maxSimulationTime: 2000,
+                 padding: 30
+             }).run();
+         
+             // Add zoom controls
+             cy.on('zoom', function() {
+                 const zoom = cy.zoom();
+                 cy.style()
+                     .selector('node')
+                     .style({
+                         'font-size': Math.max(12, 12 / zoom) + 'px',
+                         'text-outline-width': Math.max(2, 2 / zoom)
+                     })
+                     .update();
+             });
+         }
+         
+         loadAnalysis();
+      </script>
+   </body>
+</html>
