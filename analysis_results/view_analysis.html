@@ -1,26 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Bill Analysis Results</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bill Analysis Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
-            --primary-color: #1a237e;
-            --secondary-color: #4caf50;
-            --background-color: #f5f5f5;
-            --text-color: #2c3e50;
-            --border-radius: 8px;
-            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --primary-color: #1a2b4e;
+            --secondary-color: #2c5282;
+            --background-color: #f8f9fa;
+            --text-color: #1a202c;
+            --border-radius: 4px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --font-serif: Georgia, Times, 'Times New Roman', serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: var(--font-serif);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
             background: var(--background-color);
             color: var(--text-color);
+            font-size: 16px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .header {
+            background: white;
+            padding: 30px 0;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .bill-title {
+            font-family: var(--font-serif);
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin: 0 0 20px 0;
+            line-height: 1.2;
+            font-weight: normal;
+        }
+        .bill-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            font-family: var(--font-sans);
+        }
+        .meta-item {
+            background: #edf2f7;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            font-family: var(--font-sans);
+        }
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-family: var(--font-sans);
+        }
+        .primary-button {
+            background: var(--primary-color);
+            color: white;
+        }
+        .primary-button:hover {
+            background: #233876;
         }
         .section {
             background: white;
@@ -282,160 +344,47 @@
 
                 let html = `
                     <div id="top">
-                        <h1>Bill Analysis Results</h1>
-                        <div class="meta">
-                            <p>Analysis Date: ${data.analysis_date}</p>
-                            <p>URL: ${data.url}</p>
-                            <p>Sections Analyzed: ${data.sections_analyzed} / ${data.total_sections}</p>
-                        </div>
-
-                        <div class="tabs">
-                            <button class="tab active" onclick="showTab('overview')">Overview</button>
-                            <button class="tab" onclick="showTab('sections')">Sections</button>
-                            <button class="tab" onclick="showTab('impacts')">Impacts</button>
-                            <button class="tab" onclick="showTab('funding')">Funding</button>
-                        </div>
-
-                        <div id="overview" class="tab-content active">
-                            <div class="key-metrics">
-                                <div class="metric-card">
-                                    <h3>Total Sections</h3>
-                                    <div class="metric-value">${data.sections_analyzed}</div>
+                        <header class="header">
+                            <div class="container">
+                                <h1 class="bill-title">Inflation Reduction Act of 2022</h1>
+                                <div class="bill-meta">
+                                    <span class="meta-item">
+                                        <strong>Bill Number:</strong> H.R. 5376
+                                    </span>
+                                    <span class="meta-item">
+                                        <strong>Congress:</strong> 117th Congress
+                                    </span>
+                                    <span class="meta-item">
+                                        <strong>Analysis Date:</strong> ${new Date().toLocaleDateString()}
+                                    </span>
                                 </div>
-                                <div class="metric-card">
-                                    <h3>Total Impacts</h3>
-                                    <div class="metric-value">${totalImpacts}</div>
-                                </div>
-                                <div class="metric-card">
-                                    <h3>Affected Sectors</h3>
-                                    <div class="metric-value">${sectors.size}</div>
-                                </div>
-                                <div class="metric-card">
-                                    <h3>Maximum Impact Level</h3>
-                                    <div class="metric-value">
-                                        <span class="impact-level" data-level="${maxImpactLevel}">
-                                            ${maxImpactLevel}/5
-                                        </span>
-                                    </div>
+                                <div class="header-actions">
+                                    <button onclick="exportToPDF()" class="action-button primary-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="7 10 12 15 17 10"/>
+                                            <line x1="12" y1="15" x2="12" y2="3"/>
+                                        </svg>
+                                        Export PDF
+                                    </button>
                                 </div>
                             </div>
+                        </header>
 
-                            <div class="cost-summary">
-                                <h2>Total Cost Analysis</h2>
-                                ${totalNumericFunding > 0 ? `
-                                    <div class="cost-item">
-                                        <h3>Total Quantified Funding</h3>
-                                        <p style="font-size: 1.5em">$${totalNumericFunding.toLocaleString()}</p>
-                                    </div>
-                                ` : ''}
-                                ${descriptiveFunding.length > 0 ? `
-                                    <div class="cost-item">
-                                        <h3>Additional Funding Allocations</h3>
-                                        <ul style="margin: 0">
-                                            ${descriptiveFunding.map(item => `<li>${item}</li>`).join('')}
-                                        </ul>
-                                    </div>
-                                ` : ''}
+                        <div class="container">
+                            <div class="tabs">
+                                <button class="tab active" onclick="showTab('overview')">Overview</button>
+                                <button class="tab" onclick="showTab('sections')">Sections</button>
+                                <button class="tab" onclick="showTab('impacts')">Impacts</button>
+                                <button class="tab" onclick="showTab('funding')">Funding</button>
                             </div>
 
-                            <div class="section">
-                                <h2>Key Stakeholders</h2>
-                                <div class="stakeholder-impact">
-                                    ${Array.from(stakeholders).map(stakeholder => `
-                                        <div class="stakeholder-card">
-                                            <h3>${stakeholder}</h3>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-
-                            <div class="section">
-                                <h2>Implementation Timeline</h2>
-                                <div class="timeline">
-                                    ${implementationDates.map(date => `
-                                        <div class="timeline-item">
-                                            <strong>${date}</strong>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="sections" class="tab-content">
-                            <div class="toc">
-                                <h2>Table of Contents</h2>
-                                <ul>
-                                    ${tocItems.map(item => `
-                                        <li>
-                                            <a href="#${item.id}">${item.title}</a>
-                                            <div style="font-size: 0.9em; color: #666; padding-left: 10px;">
-                                                ${item.summary}
-                                            </div>
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                            </div>
-
-                            ${data.results.map(section => {
-                                const sectionId = `section-${section.number.replace(/\s+/g, '-')}`;
-                                return `
-                                    <div class="section" id="${sectionId}">
-                                        <div class="section-header">
-                                            <h2>Section ${section.number}: ${section.title}</h2>
-                                        </div>
-                                        
-                                        <div class="summary-box">
-                                            <h3>Summary</h3>
-                                            <p>${section.summary}</p>
-                                        </div>
-                                        
-                                        <h3>Key Points</h3>
-                                        <ul>
-                                            ${section.key_points.map(point => `<li>${point}</li>`).join('')}
-                                        </ul>
-
-                                        ${section.impacts && section.impacts.length > 0 ? `
-                                            <h3>Impacts</h3>
-                                            ${section.impacts.map(impact => `
-                                                <div class="impact">
-                                                    <p>
-                                                        <strong>Sector:</strong> ${impact.sector}
-                                                        <span class="impact-level" data-level="${impact.impact_level}">
-                                                            Impact: ${impact.impact_level}/5
-                                                        </span>
-                                                    </p>
-                                                    <p><strong>Description:</strong> ${impact.description}</p>
-                                                    <p><strong>Timeline:</strong> ${impact.timeline}</p>
-                                                    <p><strong>Affected Groups:</strong></p>
-                                                    <div>
-                                                        ${impact.affected_groups.map(group => 
-                                                            `<span class="tag">${group}</span>`
-                                                        ).join('')}
-                                                    </div>
-                                                    ${impact.estimated_cost ? `
-                                                        <p><strong>Estimated Cost:</strong> ${impact.estimated_cost}</p>
-                                                    ` : ''}
-                                                </div>
-                                            `).join('')}
-                                        ` : ''}
-
-                                        ${section.funding_amounts ? `
-                                            <h3>Funding</h3>
-                                            ${Object.entries(section.funding_amounts).map(([purpose, amount]) => `
-                                                <div class="funding">
-                                                    <p><strong>${purpose}:</strong> ${amount}</p>
-                                                </div>
-                                            `).join('')}
-                                        ` : ''}
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-
-                        <div id="impacts" class="tab-content">
-                            <div class="section">
-                                <h2>Impact Analysis</h2>
+                            <div id="overview" class="tab-content active">
                                 <div class="key-metrics">
+                                    <div class="metric-card">
+                                        <h3>Total Sections</h3>
+                                        <div class="metric-value">${data.sections_analyzed}</div>
+                                    </div>
                                     <div class="metric-card">
                                         <h3>Total Impacts</h3>
                                         <div class="metric-value">${totalImpacts}</div>
@@ -445,48 +394,183 @@
                                         <div class="metric-value">${sectors.size}</div>
                                     </div>
                                     <div class="metric-card">
-                                        <h3>Stakeholder Groups</h3>
-                                        <div class="metric-value">${stakeholders.size}</div>
+                                        <h3>Maximum Impact Level</h3>
+                                        <div class="metric-value">
+                                            <span class="impact-level" data-level="${maxImpactLevel}">
+                                                ${maxImpactLevel}/5
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <h3>Impact Distribution by Sector</h3>
-                                <div class="stakeholder-impact">
-                                    ${Array.from(sectors).map(sector => `
-                                        <div class="stakeholder-card">
-                                            <h3>${sector}</h3>
-                                            <p>${data.results.reduce((count, section) => 
-                                                count + (section.impacts?.filter(impact => 
-                                                    impact.sector === sector
-                                                ).length || 0), 0)} impacts</p>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="funding" class="tab-content">
-                            <div class="section">
-                                <h2>Funding Analysis</h2>
                                 <div class="cost-summary">
-                                    <h2>Total Funding Overview</h2>
+                                    <h2>Total Cost Analysis</h2>
                                     ${totalNumericFunding > 0 ? `
                                         <div class="cost-item">
                                             <h3>Total Quantified Funding</h3>
                                             <p style="font-size: 1.5em">$${totalNumericFunding.toLocaleString()}</p>
                                         </div>
                                     ` : ''}
+                                    ${descriptiveFunding.length > 0 ? `
+                                        <div class="cost-item">
+                                            <h3>Additional Funding Allocations</h3>
+                                            <ul style="margin: 0">
+                                                ${descriptiveFunding.map(item => `<li>${item}</li>`).join('')}
+                                            </ul>
+                                        </div>
+                                    ` : ''}
                                 </div>
 
-                                <h3>Funding Allocations by Section</h3>
-                                ${data.results.filter(section => section.funding_amounts).map(section => `
-                                    <div class="funding">
-                                        <h4>Section ${section.number}</h4>
-                                        ${Object.entries(section.funding_amounts).map(([purpose, amount]) => `
-                                            <p><strong>${purpose}:</strong> ${amount}</p>
+                                <div class="section">
+                                    <h2>Key Stakeholders</h2>
+                                    <div class="stakeholder-impact">
+                                        ${Array.from(stakeholders).map(stakeholder => `
+                                            <div class="stakeholder-card">
+                                                <h3>${stakeholder}</h3>
+                                            </div>
                                         `).join('')}
                                     </div>
-                                `).join('')}
+                                </div>
+
+                                <div class="section">
+                                    <h2>Implementation Timeline</h2>
+                                    <div class="timeline">
+                                        ${implementationDates.map(date => `
+                                            <div class="timeline-item">
+                                                <strong>${date}</strong>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="sections" class="tab-content">
+                                <div class="toc">
+                                    <h2>Table of Contents</h2>
+                                    <ul>
+                                        ${tocItems.map(item => `
+                                            <li>
+                                                <a href="#${item.id}">${item.title}</a>
+                                                <div style="font-size: 0.9em; color: #666; padding-left: 10px;">
+                                                    ${item.summary}
+                                                </div>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+
+                                ${data.results.map(section => {
+                                    const sectionId = `section-${section.number.replace(/\s+/g, '-')}`;
+                                    return `
+                                        <div class="section" id="${sectionId}">
+                                            <div class="section-header">
+                                                <h2>Section ${section.number}: ${section.title}</h2>
+                                            </div>
+                                            
+                                            <div class="summary-box">
+                                                <h3>Summary</h3>
+                                                <p>${section.summary}</p>
+                                            </div>
+                                            
+                                            <h3>Key Points</h3>
+                                            <ul>
+                                                ${section.key_points.map(point => `<li>${point}</li>`).join('')}
+                                            </ul>
+
+                                            ${section.impacts && section.impacts.length > 0 ? `
+                                                <h3>Impacts</h3>
+                                                ${section.impacts.map(impact => `
+                                                    <div class="impact">
+                                                        <p>
+                                                            <strong>Sector:</strong> ${impact.sector}
+                                                            <span class="impact-level" data-level="${impact.impact_level}">
+                                                                Impact: ${impact.impact_level}/5
+                                                            </span>
+                                                        </p>
+                                                        <p><strong>Description:</strong> ${impact.description}</p>
+                                                        <p><strong>Timeline:</strong> ${impact.timeline}</p>
+                                                        <p><strong>Affected Groups:</strong></p>
+                                                        <div>
+                                                            ${impact.affected_groups.map(group => 
+                                                                `<span class="tag">${group}</span>`
+                                                            ).join('')}
+                                                        </div>
+                                                        ${impact.estimated_cost ? `
+                                                            <p><strong>Estimated Cost:</strong> ${impact.estimated_cost}</p>
+                                                        ` : ''}
+                                                    </div>
+                                                `).join('')}
+                                            ` : ''}
+
+                                            ${section.funding_amounts ? `
+                                                <h3>Funding</h3>
+                                                ${Object.entries(section.funding_amounts).map(([purpose, amount]) => `
+                                                    <div class="funding">
+                                                        <p><strong>${purpose}:</strong> ${amount}</p>
+                                                    </div>
+                                                `).join('')}
+                                            ` : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <div id="impacts" class="tab-content">
+                                <div class="section">
+                                    <h2>Impact Analysis</h2>
+                                    <div class="key-metrics">
+                                        <div class="metric-card">
+                                            <h3>Total Impacts</h3>
+                                            <div class="metric-value">${totalImpacts}</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <h3>Affected Sectors</h3>
+                                            <div class="metric-value">${sectors.size}</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <h3>Stakeholder Groups</h3>
+                                            <div class="metric-value">${stakeholders.size}</div>
+                                        </div>
+                                    </div>
+
+                                    <h3>Impact Distribution by Sector</h3>
+                                    <div class="stakeholder-impact">
+                                        ${Array.from(sectors).map(sector => `
+                                            <div class="stakeholder-card">
+                                                <h3>${sector}</h3>
+                                                <p>${data.results.reduce((count, section) => 
+                                                    count + (section.impacts?.filter(impact => 
+                                                        impact.sector === sector
+                                                    ).length || 0), 0)} impacts</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="funding" class="tab-content">
+                                <div class="section">
+                                    <h2>Funding Analysis</h2>
+                                    <div class="cost-summary">
+                                        <h2>Total Funding Overview</h2>
+                                        ${totalNumericFunding > 0 ? `
+                                            <div class="cost-item">
+                                                <h3>Total Quantified Funding</h3>
+                                                <p style="font-size: 1.5em">$${totalNumericFunding.toLocaleString()}</p>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+
+                                    <h3>Funding Allocations by Section</h3>
+                                    ${data.results.filter(section => section.funding_amounts).map(section => `
+                                        <div class="funding">
+                                            <h4>Section ${section.number}</h4>
+                                            ${Object.entries(section.funding_amounts).map(([purpose, amount]) => `
+                                                <p><strong>${purpose}:</strong> ${amount}</p>
+                                            `).join('')}
+                                        </div>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -533,6 +617,18 @@
             
             // Activate selected tab
             document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        function exportToPDF() {
+            const element = document.getElementById('content');
+            const opt = {
+                margin: 1,
+                filename: 'bill-analysis.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
         }
 
         loadAnalysis();
