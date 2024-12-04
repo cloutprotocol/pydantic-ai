@@ -2004,3 +2004,60 @@ font-weight: 500;
         padding: 6px 10px;
     }
 }
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+  
+  .timeline {
+    padding: 15px 0 15px 12px;
+    margin-left: 0;
+  }
+
+  .timeline-item {
+    padding-left: 0;
+    margin-bottom: 20px;
+  }
+
+  .timeline-item::before {
+    left: -18px;
+    width: 8px;
+    height: 8px;
+    top: 6px;
+  }
+
+  .timeline-content {
+    padding: 12px;
+    margin-top: 3px;
+  }
+
+  .timeline-date {
+    font-size: 0.85em;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .section {
+    padding: 15px 12px;
+    margin: 15px 0;
+  }
+
+  .timeline-content h4 {
+    font-size: 1em;
+    margin-bottom: 8px;
+  }
+
+  .vote-info, .party-breakdown {
+    padding: 12px;
+    margin: 15px 0;
+  }
+
+  .vote-info-item {
+    padding: 6px 0;
+  }
+
+  .party-stat {
+    padding: 8px;
+  }
+}
