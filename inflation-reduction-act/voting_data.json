@@ -1,0 +1,175 @@
+{
+  "bill_info": {
+    "name": "Inflation Reduction Act of 2022",
+    "number": "H.R. 5376",
+    "congress": "117th Congress",
+    "status": "Enacted",
+    "signed_date": "August 16, 2022"
+  },
+  "house": {
+    "chamber": "House of Representatives",
+    "vote_date": "August 12, 2022",
+    "final_result": "Passed",
+    "total": {
+      "yea": 220,
+      "nay": 207,
+      "not_voting": 4,
+      "majority_needed": 214
+    },
+    "by_party": {
+      "democratic": {
+        "total": 220,
+        "yea": ["Adams", "Aguilar", "Allred", "Auchincloss", "Axne", "Barragán", "Bass", "Beatty", "Bera", 
+                "Beyer", "Bishop (GA)", "Blumenauer", "Blunt Rochester", "Bonamici", "Bourdeaux", "Bowman",
+                "Boyle", "Brown (MD)", "Brown (OH)", "Brownley", "Bush", "Bustos", "Butterfield", "Carbajal",
+                "Cárdenas", "Carson", "Carter (LA)", "Cartwright", "Case", "Casten", "Castor (FL)", "Castro (TX)",
+                "Chu", "Cicilline", "Clark (MA)", "Clarke (NY)", "Cleaver", "Clyburn", "Cohen", "Connolly",
+                "Cooper", "Correa", "Costa", "Courtney", "Craig", "Crist", "Crow", "Cuellar", "Davids (KS)",
+                "Davis", "Dean", "DeFazio", "DeGette", "DeLauro", "DelBene", "Demings", "DeSaulnier", "Deutch",
+                "Dingell", "Doggett", "Doyle", "Escobar", "Eshoo", "Espaillat", "Evans", "Foster", "Frankel",
+                "Gallego", "Garamendi", "García", "Garcia (TX)", "Golden", "Gomez", "Gonzalez", "Gottheimer",
+                "Green", "Grijalva", "Harder", "Hayes", "Higgins", "Himes", "Horsford", "Houlahan", "Hoyer",
+                "Huffman", "Jackson Lee", "Jacobs", "Jayapal", "Jeffries", "Johnson (GA)", "Johnson (TX)",
+                "Jones", "Kahele", "Kaptur", "Keating", "Kelly (IL)", "Khanna", "Kildee", "Kilmer", "Kim (NJ)",
+                "Kind", "Kirkpatrick", "Krishnamoorthi", "Kuster", "Lamb", "Langevin", "Larsen", "Larson",
+                "Lawrence", "Lawson", "Lee (CA)", "Lee (NV)", "Leger Fernandez", "Levin (CA)", "Levin (MI)",
+                "Lieu", "Lofgren", "Lowenthal", "Lynch", "Malinowski", "Maloney", "Manning", "Matsui",
+                "McBath", "McCollum", "McEachin", "McGovern", "McNerney", "Meeks", "Meng", "Mfume",
+                "Moore (WI)", "Morelle", "Moulton", "Mrvan", "Murphy (FL)", "Nadler", "Napolitano", "Neal",
+                "Neguse", "Newman", "Norcross", "O'Halleran", "Ocasio-Cortez", "Omar", "Pallone", "Panetta",
+                "Pappas", "Pascrell", "Payne", "Pelosi", "Perlmutter", "Peters", "Phillips", "Pingree",
+                "Pocan", "Porter", "Pressley", "Price", "Quigley", "Raskin", "Rice (NY)", "Ross", "Roybal-Allard",
+                "Ruiz", "Ruppersberger", "Rush", "Ryan", "Sánchez", "Sarbanes", "Scanlon", "Schakowsky",
+                "Schiff", "Schneider", "Schrader", "Schrier", "Scott (VA)", "Scott, David", "Sewell",
+                "Sherman", "Sherrill", "Sires", "Slotkin", "Smith (WA)", "Soto", "Spanberger", "Speier",
+                "Stansbury", "Stanton", "Stevens", "Strickland", "Suozzi", "Swalwell", "Takano",
+                "Thompson (CA)", "Thompson (MS)", "Titus", "Tlaib", "Tonko", "Torres (CA)", "Torres (NY)",
+                "Trahan", "Trone", "Underwood", "Vargas", "Veasey", "Velázquez", "Wasserman Schultz",
+                "Waters", "Watson Coleman", "Welch", "Wexton", "Wild", "Williams (GA)", "Wilson (FL)",
+                "Yarmuth"],
+        "nay": [],
+        "not_voting": ["Butterfield"]
+      },
+      "republican": {
+        "total": 210,
+        "yea": [],
+        "nay": ["Aderholt", "Allen", "Amodei", "Armstrong", "Arrington", "Babin", "Bacon", "Baird",
+                "Balderson", "Banks", "Barr", "Bentz", "Bergman", "Bice", "Biggs", "Bilirakis",
+                "Bishop (NC)", "Boebert", "Bost", "Brady", "Brooks", "Buchanan", "Buck", "Bucshon",
+                "Budd", "Burchett", "Burgess", "Calvert", "Cammack", "Carey", "Carter (GA)",
+                "Carter (TX)", "Cawthorn", "Chabot", "Cheney", "Cline", "Cloud", "Clyde", "Cole",
+                "Comer", "Crawford", "Crenshaw", "Curtis", "Davidson", "Davis", "DesJarlais",
+                "Diaz-Balart", "Donalds", "Duncan", "Dunn", "Emmer", "Estes", "Fallon", "Feenstra",
+                "Ferguson", "Fitzgerald", "Fitzpatrick", "Fleischmann", "Flood", "Flores", "Foxx",
+                "Franklin", "Fulcher", "Gaetz", "Garbarino", "Garcia (CA)", "Gibbs", "Gimenez",
+                "Gohmert", "Gonzales", "Gonzalez (OH)", "Good (VA)", "Gooden (TX)", "Gosar",
+                "Granger", "Graves (LA)", "Graves (MO)", "Green (TN)", "Greene (GA)", "Griffith",
+                "Grothman", "Guest", "Guthrie", "Harris", "Harshbarger", "Hartzler", "Hern",
+                "Herrell", "Herrera Beutler", "Hice (GA)", "Higgins (LA)", "Hill", "Hinson",
+                "Hollingsworth", "Hudson", "Huizenga", "Issa", "Jackson", "Jacobs (NY)", "Johnson (LA)",
+                "Johnson (OH)", "Johnson (SD)", "Jordan", "Joyce (OH)", "Joyce (PA)", "Katko",
+                "Keller", "Kelly (MS)", "Kelly (PA)", "Kim (CA)", "Kinzinger", "Kustoff",
+                "LaHood", "LaMalfa", "Lamborn", "Latta", "LaTurner", "Lesko", "Letlow",
+                "Long", "Loudermilk", "Lucas", "Luetkemeyer", "Mace", "Malliotakis", "Mann",
+                "Massie", "Mast", "McCarthy", "McCaul", "McClain", "McClintock", "McHenry",
+                "McKinley", "Meijer", "Meuser", "Miller (IL)", "Miller (WV)", "Miller-Meeks",
+                "Moolenaar", "Mooney", "Moore (AL)", "Moore (UT)", "Mullin", "Murphy (NC)",
+                "Nehls", "Newhouse", "Norman", "Obernolte", "Owens", "Palazzo", "Palmer",
+                "Perry", "Pfluger", "Posey", "Reed", "Reschenthaler", "Rice (SC)", "Rodgers (WA)",
+                "Rogers (KY)", "Rose", "Rosendale", "Rouzer", "Roy", "Rutherford", "Salazar",
+                "Scalise", "Schweikert", "Scott, Austin", "Sessions", "Simpson", "Smith (MO)",
+                "Smith (NE)", "Smith (NJ)", "Smucker", "Spartz", "Stauber", "Steel", "Stefanik",
+                "Steil", "Steube", "Stewart", "Taylor", "Tenney", "Thompson (PA)", "Tiffany",
+                "Timmons", "Turner", "Upton", "Valadao", "Van Drew", "Van Duyne", "Wagner",
+                "Walberg", "Waltz", "Weber (TX)", "Webster (FL)", "Wenstrup", "Westerman",
+                "Williams (TX)", "Wilson (SC)", "Wittman", "Womack", "Zeldin"],
+        "not_voting": ["Carl", "Gallagher", "Rogers (AL)"]
+      }
+    },
+    "key_events": [
+      {
+        "date": "August 12, 2022",
+        "event": "House Floor Vote",
+        "description": "Passed with strict party-line vote"
+      }
+    ]
+  },
+  "senate": {
+    "chamber": "Senate",
+    "vote_date": "August 7, 2022",
+    "final_result": "Passed",
+    "total": {
+      "yea": 51,
+      "nay": 50,
+      "majority_needed": 51
+    },
+    "by_party": {
+      "democratic": {
+        "total": 48,
+        "yea": ["Baldwin", "Bennet", "Blumenthal", "Booker", "Brown", "Cantwell", "Cardin",
+                "Carper", "Casey", "Coons", "Cortez Masto", "Duckworth", "Durbin", "Feinstein",
+                "Gillibrand", "Hassan", "Heinrich", "Hickenlooper", "Hirono", "Kaine", "Kelly",
+                "Klobuchar", "Leahy", "Lujan", "Manchin", "Markey", "Menendez", "Merkley",
+                "Murphy", "Murray", "Ossoff", "Padilla", "Peters", "Reed", "Rosen", "Schatz",
+                "Schumer", "Shaheen", "Sinema", "Smith", "Stabenow", "Tester", "Van Hollen",
+                "Warner", "Warnock", "Warren", "Whitehouse", "Wyden"],
+        "nay": []
+      },
+      "republican": {
+        "total": 50,
+        "yea": [],
+        "nay": ["Barrasso", "Blackburn", "Blunt", "Boozman", "Braun", "Burr", "Capito",
+                "Cassidy", "Collins", "Cornyn", "Cotton", "Cramer", "Crapo", "Cruz", "Daines",
+                "Ernst", "Fischer", "Graham", "Grassley", "Hagerty", "Hawley", "Hoeven",
+                "Hyde-Smith", "Inhofe", "Johnson", "Kennedy", "Lankford", "Lee", "Lummis",
+                "Marshall", "McConnell", "Moran", "Murkowski", "Paul", "Portman", "Risch",
+                "Romney", "Rounds", "Rubio", "Sasse", "Scott (FL)", "Scott (SC)", "Shelby",
+                "Sullivan", "Thune", "Tillis", "Toomey", "Tuberville", "Wicker", "Young"]
+      },
+      "independent": {
+        "total": 2,
+        "yea": ["King", "Sanders"],
+        "nay": []
+      }
+    },
+    "tie_breaker": {
+      "cast_by": "Vice President Kamala Harris",
+      "vote": "Yea",
+      "description": "Tie-breaking vote cast in favor of the bill"
+    },
+    "key_events": [
+      {
+        "date": "August 6, 2022",
+        "event": "Vote-a-rama",
+        "description": "Marathon voting session on amendments"
+      },
+      {
+        "date": "August 7, 2022",
+        "event": "Final Senate Vote",
+        "description": "Passed with VP Harris casting tie-breaking vote"
+      }
+    ]
+  },
+  "timeline": [
+    {
+      "date": "August 7, 2022",
+      "chamber": "Senate",
+      "event": "Passage",
+      "description": "Passed 51-50 with VP Harris tie-breaking vote",
+      "details": "All Democrats and Independents voted in favor, all Republicans against"
+    },
+    {
+      "date": "August 12, 2022",
+      "chamber": "House",
+      "event": "Passage",
+      "description": "Passed 220-207",
+      "details": "Strict party-line vote with all present Democrats in favor"
+    },
+    {
+      "date": "August 16, 2022",
+      "event": "Presidential Action",
+      "description": "Signed into law by President Biden",
+      "details": "Became Public Law No: 117-169"
+    }
+  ]
+} 

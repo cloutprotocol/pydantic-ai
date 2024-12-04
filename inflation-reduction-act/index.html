@@ -142,8 +142,20 @@
                                      <span class="meta-item">
                                          <strong>Analysis Date:</strong> ${new Date().toLocaleDateString()}
                                      </span>
+                                     <span class="ai-disclaimer">
+                                         <span class="caution-symbol">⚠</span>
+                                         AI-generated analysis: Results may require verification
+                                     </span>
                                  </div>
                                  <div class="header-actions">
+                                     <button onclick="exportJSON()" class="action-button secondary-button">
+                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                             <polyline points="7 10 12 15 17 10"/>
+                                             <line x1="12" y1="15" x2="12" y2="3"/>
+                                         </svg>
+                                         Export JSON
+                                     </button>
                                      <button onclick="exportToPDF()" class="action-button primary-button">
                                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -164,6 +176,7 @@
                                  <button class="tab" onclick="showTab('impacts')">Impacts</button>
                                  <button class="tab" onclick="showTab('stakeholders')">Stakeholders</button>
                                  <button class="tab" onclick="showTab('funding')">Funding</button>
+                                 <button class="tab" onclick="showTab('voting')">Voting</button>
                                  <button class="tab" onclick="showTab('comments')">Comments</button>
                              </div>
          
@@ -947,6 +960,197 @@
                                                          </div>
                                                      ` : '';
                                                  }).join('')}
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+         
+                             <div id="voting" class="tab-content">
+                                 <div class="section">
+                                     <div class="vote-header">
+                                         <h2>Congressional Voting Results</h2>
+                                         <p class="vote-summary">Analysis of the voting patterns and outcomes for the Inflation Reduction Act across both chambers of Congress.</p>
+                                     </div>
+
+                                     <div class="vote-chambers">
+                                         <div class="chamber-card">
+                                             <div class="chamber-header">
+                                                 <h3>House Vote</h3>
+                                                 <span class="vote-date">August 12, 2022</span>
+                                             </div>
+                                             <div class="vote-stats">
+                                                 <div class="stat-box">
+                                                     <span class="stat-label">Yeas</span>
+                                                     <span class="stat-value">220</span>
+                                                 </div>
+                                                 <div class="stat-box">
+                                                     <span class="stat-label">Nays</span>
+                                                     <span class="stat-value">207</span>
+                                                 </div>
+                                                 <div class="stat-box passed">
+                                                     <span class="stat-label">Result</span>
+                                                     <span class="stat-value">Passed</span>
+                                                 </div>
+                                             </div>
+
+                                             <div class="party-breakdown">
+                                                 <h4>Party Breakdown</h4>
+                                                 <div class="party-stats">
+                                                     <div class="party-stat party-dem">
+                                                         <span class="party-stat-label">Democrats</span>
+                                                         <span class="party-stat-value">220-0</span>
+                                                     </div>
+                                                     <div class="party-stat party-rep">
+                                                         <span class="party-stat-label">Republicans</span>
+                                                         <span class="party-stat-value">0-207</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+
+                                             <div class="vote-info">
+                                                 <div class="vote-info-item">
+                                                     <span class="vote-info-icon">ℹ️</span>
+                                                     <span class="vote-info-text">Strict party-line vote with all Democrats in favor and all Republicans against</span>
+                                                 </div>
+                                                 <div class="vote-info-item">
+                                                     <span class="vote-info-icon">⚪</span>
+                                                     <span class="vote-info-text">4 members did not vote (3 Republicans, 1 Democrat)</span>
+                                                 </div>
+                                             </div>
+
+                                             <div class="vote-visualization">
+                                                 <div class="vote-chart" id="houseVoteChart"></div>
+                                             </div>
+
+                                             <div class="member-lists">
+                                                 <div class="member-list-toggle" onclick="toggleMemberList('houseYeas')">
+                                                     Yea Votes (220 Members)
+                                                 </div>
+                                                 <div class="member-list" id="houseYeas">
+                                                     <div class="member-list-grid">
+                                                         <!-- Member items will be populated by JavaScript -->
+                                                     </div>
+                                                 </div>
+
+                                                 <div class="member-list-toggle" onclick="toggleMemberList('houseNays')">
+                                                     Nay Votes (207 Members)
+                                                 </div>
+                                                 <div class="member-list" id="houseNays">
+                                                     <div class="member-list-grid">
+                                                         <!-- Member items will be populated by JavaScript -->
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+
+                                         <div class="chamber-card">
+                                             <div class="chamber-header">
+                                                 <h3>Senate Vote</h3>
+                                                 <span class="vote-date">August 7, 2022</span>
+                                             </div>
+                                             <div class="vote-stats">
+                                                 <div class="stat-box">
+                                                     <span class="stat-label">Yeas</span>
+                                                     <span class="stat-value">51</span>
+                                                 </div>
+                                                 <div class="stat-box">
+                                                     <span class="stat-label">Nays</span>
+                                                     <span class="stat-value">50</span>
+                                                 </div>
+                                                 <div class="stat-box passed">
+                                                     <span class="stat-label">Result</span>
+                                                     <span class="stat-value">Passed</span>
+                                                 </div>
+                                             </div>
+
+                                             <div class="party-breakdown">
+                                                 <h4>Party Breakdown</h4>
+                                                 <div class="party-stats">
+                                                     <div class="party-stat party-dem">
+                                                         <span class="party-stat-label">Democrats</span>
+                                                         <span class="party-stat-value">48-0</span>
+                                                     </div>
+                                                     <div class="party-stat party-rep">
+                                                         <span class="party-stat-label">Republicans</span>
+                                                         <span class="party-stat-value">0-50</span>
+                                                     </div>
+                                                     <div class="party-stat party-ind">
+                                                         <span class="party-stat-label">Independents</span>
+                                                         <span class="party-stat-value">2-0</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+
+                                             <div class="vote-info">
+                                                 <div class="vote-info-item">
+                                                     <span class="vote-info-icon">⚖️</span>
+                                                     <span class="vote-info-text">Vice President Harris cast the tie-breaking vote</span>
+                                                 </div>
+                                                 <div class="vote-info-item">
+                                                     <span class="vote-info-icon">ℹ️</span>
+                                                     <span class="vote-info-text">Both Independent senators (Bernie Sanders and Angus King) voted in favor</span>
+                                                 </div>
+                                             </div>
+
+                                             <div class="vote-visualization">
+                                                 <div class="vote-chart" id="senateVoteChart"></div>
+                                             </div>
+
+                                             <div class="member-lists">
+                                                 <div class="member-list-toggle" onclick="toggleMemberList('senateYeas')">
+                                                     Yea Votes (51 Members)
+                                                 </div>
+                                                 <div class="member-list" id="senateYeas">
+                                                     <div class="member-list-grid">
+                                                         <!-- Member items will be populated by JavaScript -->
+                                                     </div>
+                                                 </div>
+
+                                                 <div class="member-list-toggle" onclick="toggleMemberList('senateNays')">
+                                                     Nay Votes (50 Members)
+                                                 </div>
+                                                 <div class="member-list" id="senateNays">
+                                                     <div class="member-list-grid">
+                                                         <!-- Member items will be populated by JavaScript -->
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+
+                                     <div class="vote-timeline">
+                                         <h3>Voting Timeline</h3>
+                                         <div class="timeline">
+                                             <div class="timeline-item">
+                                                 <div class="timeline-date">August 7, 2022</div>
+                                                 <div class="timeline-content">
+                                                     <h4>Senate Vote</h4>
+                                                     <p>The Senate passed the bill with Vice President Harris casting the tie-breaking vote (51-50).</p>
+                                                     <div class="info-item">
+                                                         <span class="info-text">All Democrats and Independents voted in favor, while all Republicans opposed.</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             <div class="timeline-item">
+                                                 <div class="timeline-date">August 12, 2022</div>
+                                                 <div class="timeline-content">
+                                                     <h4>House Vote</h4>
+                                                     <p>The House passed the bill with a vote of 220-207.</p>
+                                                     <div class="info-item">
+                                                         <span class="info-text">Strict party-line vote with all present Democrats voting in favor and all present Republicans voting against.</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             <div class="timeline-item">
+                                                 <div class="timeline-date">August 16, 2022</div>
+                                                 <div class="timeline-content">
+                                                     <h4>Presidential Signature</h4>
+                                                     <p>President Biden signed the Inflation Reduction Act into law.</p>
+                                                     <div class="info-item">
+                                                         <span class="info-text">The bill became Public Law No: 117-169</span>
+                                                     </div>
+                                                 </div>
+                                             </div>
                                          </div>
                                      </div>
                                  </div>
