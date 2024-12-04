@@ -1218,6 +1218,119 @@
             font-size: 14px;
             color: #666;
         }
+        #networkControls {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        #networkContainer {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        .network-sort-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            background: white;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .network-sort-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .stakeholder-detail-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .stakeholder-header {
+            margin-bottom: 20px;
+        }
+        .stakeholder-header h3 {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+            font-size: 1.4em;
+        }
+        .stakeholder-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .stakeholder-content {
+            display: grid;
+            gap: 20px;
+        }
+        .stakeholder-description {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        .stakeholder-concerns h4,
+        .stakeholder-recommendations h4,
+        .stakeholder-relationships h4 {
+            color: var(--primary-color);
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+        }
+        .stakeholder-concerns ul,
+        .stakeholder-recommendations ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .stakeholder-concerns li,
+        .stakeholder-recommendations li {
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+        .relationship-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .relationship-tag {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .relationship-tag:hover {
+            background: #bbdefb;
+        }
+        .impact-metrics {
+            margin-top: 15px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .metric-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: var(--border-radius);
+        }
+        .metric-label {
+            font-size: 0.9em;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+        .metric-value {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -2564,6 +2677,93 @@
                             break;
                     }
                     edge.style('display', visible ? 'element' : 'none');
+                });
+            });
+        }
+
+        function initializeNetwork(data) {
+            const cy = cytoscape({
+                container: document.getElementById('networkContainer'),
+                elements: data,
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            'label': 'data(label)',
+                            'width': 'data(size)',
+                            'height': 'data(size)',
+                            'background-color': 'data(color)',
+                            'font-size': '12px',
+                            'text-wrap': 'wrap',
+                            'text-max-width': '100px',
+                            'text-valign': 'center',
+                            'text-halign': 'center'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'line-color': '#ccc',
+                            'curve-style': 'bezier'
+                        }
+                    }
+                ],
+                layout: {
+                    name: 'cola',
+                    nodeSpacing: 50,
+                    edgeLength: 200,
+                    animate: true,
+                    randomize: false,
+                    maxSimulationTime: 1500
+                }
+            });
+
+            // Add click handlers for nodes
+            cy.on('tap', 'node', function(evt) {
+                const node = evt.target;
+                const stakeholderId = node.data('id');
+                const section = document.getElementById('stakeholder-' + stakeholderId);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            // Add sorting functionality
+            document.querySelectorAll('.network-sort-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.network-sort-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const sortType = this.dataset.sort;
+                    let layout;
+                    
+                    switch(sortType) {
+                        case 'impact':
+                            layout = cy.layout({
+                                name: 'concentric',
+                                concentric: node => node.data('impact'),
+                                levelWidth: () => 1
+                            });
+                            break;
+                        case 'type':
+                            layout = cy.layout({
+                                name: 'cola',
+                                nodeSpacing: 50,
+                                groups: node => node.data('type')
+                            });
+                            break;
+                        case 'connections':
+                            layout = cy.layout({
+                                name: 'cola',
+                                nodeSpacing: 50,
+                                alignment: {vertical: true},
+                                sort: (a, b) => b.degree() - a.degree()
+                            });
+                            break;
+                    }
+                    
+                    layout.run();
                 });
             });
         }
