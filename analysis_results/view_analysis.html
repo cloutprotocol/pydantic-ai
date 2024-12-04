@@ -1536,6 +1536,55 @@
         .timeline-container {
             max-width: 1200px;
         }
+
+        /* Add to Timeline styles */
+        .timeline-sections {
+            margin-bottom: 15px;
+        }
+
+        .section-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .section-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .section-link:hover {
+            background: var(--secondary-color);
+        }
+
+        .funding-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .impact-summary {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+
+        .impact-count, .groups-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
     </style>
 </head>
 <body>
@@ -2016,12 +2065,42 @@
                                                                     .flatMap(section => section.impacts || [])
                                                                     .filter(impact => impact.timeline === (date.date || date));
 
+                                                                // Find sections related to this date
+                                                                const relatedSections = data.results
+                                                                    .filter(section => 
+                                                                        section.impacts?.some(impact => 
+                                                                            impact.timeline === (date.date || date)
+                                                                        )
+                                                                    );
+
                                                                 return `
                                                                     <div class="timeline-event">
                                                                         <div class="timeline-date">
                                                                             <strong>${formattedDate}</strong>
                                                                         </div>
                                                                         <div class="timeline-content">
+                                                                            ${relatedSections.length > 0 ? `
+                                                                                <div class="timeline-sections">
+                                                                                    <div class="section-links">
+                                                                                        ${relatedSections.map(section => `
+                                                                                            <a href="#section-${section.number.replace(/\s+/g, '-')}" 
+                                                                                               class="section-link"
+                                                                                               onclick="showTab('sections'); showSectionTab('details');">
+                                                                                                Section ${section.number}
+                                                                                                ${section.funding_amounts ? (() => {
+                                                                                                    const totalFunding = Object.values(section.funding_amounts)
+                                                                                                        .reduce((sum, val) => sum + (typeof val === 'number' ? val : 0), 0);
+                                                                                                    return totalFunding > 0 ? `
+                                                                                                    <span class="funding-tag">
+                                                                                                        $${totalFunding.toLocaleString()}
+                                                                                                    </span>
+                                                                                                    ` : '';
+                                                                                                })() : ''}
+                                                                                            </a>
+                                                                                        `).join('')}
+                                                                                    </div>
+                                                                                </div>
+                                                                            ` : ''}
                                                                             ${date.context ? `
                                                                                 <div class="timeline-description">
                                                                                     ${date.context}
@@ -2029,6 +2108,14 @@
                                                                             ` : ''}
                                                                             ${relatedImpacts.length > 0 ? `
                                                                                 <div class="timeline-impacts">
+                                                                                    <div class="impact-summary">
+                                                                                        <span class="impact-count">
+                                                                                            ${relatedImpacts.length} Impact${relatedImpacts.length !== 1 ? 's' : ''}
+                                                                                        </span>
+                                                                                        <span class="groups-count">
+                                                                                            ${new Set(relatedImpacts.flatMap(i => i.affected_groups || [])).size} Affected Groups
+                                                                                        </span>
+                                                                                    </div>
                                                                                     <h4>Related Impacts:</h4>
                                                                                     <ul>
                                                                                         ${relatedImpacts.map(impact => `
