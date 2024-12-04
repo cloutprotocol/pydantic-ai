@@ -1224,13 +1224,17 @@
             gap: 10px;
             align-items: center;
             flex-wrap: wrap;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: var(--border-radius);
         }
         #networkContainer {
             width: 100%;
-            height: 600px;
+            height: 700px;
             border: 1px solid #e2e8f0;
             border-radius: var(--border-radius);
             overflow: hidden;
+            position: relative;
         }
         .network-sort-btn {
             padding: 6px 12px;
@@ -1240,10 +1244,73 @@
             color: var(--primary-color);
             cursor: pointer;
             font-size: 0.9em;
+            transition: all 0.2s;
         }
         .network-sort-btn.active {
             background: var(--primary-color);
             color: white;
+        }
+        .network-legend {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            font-size: 0.9em;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .network-tooltip {
+            position: absolute;
+            background: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            pointer-events: auto;
+            display: none;
+            max-width: 300px;
+            font-size: 0.9em;
+            border-left: 4px solid var(--primary-color);
+        }
+        .tooltip-header {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tooltip-content {
+            margin-bottom: 10px;
+        }
+        .tooltip-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tooltip-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            background: #f0f4f8;
+            border-radius: 4px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: background-color 0.2s;
+        }
+        .tooltip-link:hover {
+            background: #e2e8f0;
         }
         .stakeholder-detail-card {
             background: white;
@@ -2682,6 +2749,22 @@
         }
 
         function initializeNetwork(data) {
+            const nodeColors = {
+                'Government': '#2563eb', // Darker blue
+                'Business': '#16a34a', // Darker green
+                'NGO': '#ea580c', // Darker orange
+                'Public': '#7c3aed', // Darker purple
+                'Academic': '#db2777' // Darker pink
+            };
+
+            const impactSizes = {
+                1: 35,
+                2: 45,
+                3: 55,
+                4: 65,
+                5: 75
+            };
+
             const cy = cytoscape({
                 container: document.getElementById('networkContainer'),
                 elements: data,
@@ -2693,40 +2776,223 @@
                             'width': 'data(size)',
                             'height': 'data(size)',
                             'background-color': 'data(color)',
-                            'font-size': '12px',
+                            'font-size': '13px',
+                            'color': '#1a202c',
                             'text-wrap': 'wrap',
-                            'text-max-width': '100px',
+                            'text-max-width': '120px',
                             'text-valign': 'center',
-                            'text-halign': 'center'
+                            'text-halign': 'center',
+                            'border-width': 2,
+                            'border-color': '#fff',
+                            'text-outline-width': 3,
+                            'text-outline-color': '#fff',
+                            'text-outline-opacity': 1,
+                            'font-weight': 500
                         }
                     },
                     {
                         selector: 'edge',
                         style: {
-                            'width': 2,
-                            'line-color': '#ccc',
-                            'curve-style': 'bezier'
+                            'width': 'data(weight)',
+                            'line-color': '#64748b', // Darker edge color
+                            'curve-style': 'bezier',
+                            'opacity': 0.8,
+                            'target-arrow-shape': 'triangle',
+                            'arrow-scale': 1,
+                            'target-arrow-color': '#64748b'
+                        }
+                    },
+                    {
+                        selector: 'node.highlighted',
+                        style: {
+                            'border-width': 3,
+                            'border-color': '#fbbf24',
+                            'text-outline-color': '#fff',
+                            'text-outline-width': 4,
+                            'font-weight': 600,
+                            'z-index': 999
+                        }
+                    },
+                    {
+                        selector: 'edge.highlighted',
+                        style: {
+                            'line-color': '#fbbf24',
+                            'target-arrow-color': '#fbbf24',
+                            'opacity': 1,
+                            'width': 'data(weight)',
+                            'z-index': 999
+                        }
+                    },
+                    {
+                        selector: '.faded',
+                        style: {
+                            'opacity': 0.15
                         }
                     }
                 ],
                 layout: {
                     name: 'cola',
-                    nodeSpacing: 50,
-                    edgeLength: 200,
+                    nodeSpacing: 100,
+                    edgeLength: 250,
                     animate: true,
                     randomize: false,
-                    maxSimulationTime: 1500
+                    maxSimulationTime: 2000,
+                    padding: 50,
+                    edgeSymDiffLength: 10,
+                    edgeJaccardLength: 100,
+                    animationEasing: 'ease-out',
+                    animationDuration: 1000,
+                    refresh: 1,
+                    fit: true
                 }
             });
 
-            // Add click handlers for nodes
+            // Add zoom controls
+            cy.on('zoom', function() {
+                const zoom = cy.zoom();
+                cy.style()
+                    .selector('node')
+                    .style({
+                        'font-size': Math.max(13, 13 / zoom) + 'px',
+                        'text-outline-width': Math.max(3, 3 / zoom)
+                    })
+                    .update();
+            });
+
+            // Add background grid (optional - uncomment if you want a grid)
+            /*
+            cy.style()
+                .selector('core')
+                .style({
+                    'background-image': 'data:image/svg+xml;base64,' + btoa(`
+                        <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M 0 0 L 40 0 40 40 0 40" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+                        </svg>
+                    `),
+                    'background-opacity': 0.5
+                })
+                .update();
+            */
+
+            // Rest of the code (tooltip, legend, etc.) remains the same
+            // ... existing code ...
+
+            // Create legend
+            const legend = document.createElement('div');
+            legend.className = 'network-legend';
+            legend.innerHTML = `
+                <div style="margin-bottom: 10px"><strong>Stakeholder Types</strong></div>
+                ${Object.entries(nodeColors).map(([type, color]) => `
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: ${color}"></div>
+                        <span>${type}</span>
+                    </div>
+                `).join('')}
+                <div style="margin: 10px 0"><strong>Impact Levels</strong></div>
+                <div style="display: flex; align-items: center; gap: 5px">
+                    <div style="width: 10px; height: 10px; border-radius: 50%"></div>
+                    <div style="width: 15px; height: 15px; border-radius: 50%"></div>
+                    <div style="width: 20px; height: 20px; border-radius: 50%"></div>
+                    <span style="margin-left: 5px">Size indicates impact level (1-5)</span>
+                </div>
+            `;
+            document.getElementById('networkContainer').appendChild(legend);
+
+            // Create tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'network-tooltip';
+            document.getElementById('networkContainer').appendChild(tooltip);
+
+            // Interaction handlers
+            cy.on('mouseover', 'node', function(e) {
+                const node = e.target;
+                const stakeholder = node.data();
+                
+                // Show tooltip with navigation
+                tooltip.innerHTML = `
+                    <div class="tooltip-header">
+                        <strong>${stakeholder.label}</strong>
+                        <div style="margin-top: 4px;">
+                            <span class="tag">${stakeholder.type}</span>
+                            <span class="impact-level" data-level="${stakeholder.impact}">Impact Level ${stakeholder.impact}</span>
+                        </div>
+                    </div>
+                    <div class="tooltip-content">
+                        ${stakeholder.description ? `<p>${stakeholder.description}</p>` : ''}
+                        ${stakeholder.key_concerns ? `
+                            <div style="margin-top: 8px;">
+                                <strong>Key Concerns:</strong> ${stakeholder.key_concerns[0]}
+                                ${stakeholder.key_concerns.length > 1 ? ' ...' : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="tooltip-nav">
+                        <a href="#stakeholder-${stakeholder.id}" class="tooltip-link" onclick="event.stopPropagation();">
+                            View Details
+                        </a>
+                        <a href="#impact-${stakeholder.id}" class="tooltip-link" onclick="event.stopPropagation();">
+                            Impact Analysis
+                        </a>
+                        <a href="#recommendations-${stakeholder.id}" class="tooltip-link" onclick="event.stopPropagation();">
+                            Recommendations
+                        </a>
+                    </div>
+                `;
+                tooltip.style.display = 'block';
+                tooltip.style.left = e.renderedPosition.x + 'px';
+                tooltip.style.top = e.renderedPosition.y + 'px';
+
+                // Highlight connected nodes
+                const neighborhood = node.neighborhood().add(node);
+                cy.elements().addClass('faded');
+                neighborhood.removeClass('faded').addClass('highlighted');
+            });
+
+            cy.on('mouseout', 'node', function() {
+                tooltip.style.display = 'none';
+                cy.elements().removeClass('faded highlighted');
+            });
+
             cy.on('tap', 'node', function(evt) {
                 const node = evt.target;
                 const stakeholderId = node.data('id');
-                const section = document.getElementById('stakeholder-' + stakeholderId);
-                if (section) {
-                    section.scrollIntoView({ behavior: 'smooth' });
+                
+                // Check which section exists and scroll to it
+                const sections = [
+                    'stakeholder-' + stakeholderId,
+                    'impact-' + stakeholderId,
+                    'recommendations-' + stakeholderId
+                ];
+                
+                for (const sectionId of sections) {
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                        section.style.animation = 'highlight 2s';
+                        break;
+                    }
                 }
+            });
+
+            // Add mousemove handler to keep tooltip near cursor
+            cy.on('mousemove', 'node', function(e) {
+                const tooltipWidth = tooltip.offsetWidth;
+                const tooltipHeight = tooltip.offsetHeight;
+                const containerRect = cy.container().getBoundingClientRect();
+                
+                let left = e.renderedPosition.x;
+                let top = e.renderedPosition.y;
+                
+                // Adjust position to keep tooltip within container
+                if (left + tooltipWidth > containerRect.width) {
+                    left = left - tooltipWidth - 10;
+                }
+                if (top + tooltipHeight > containerRect.height) {
+                    top = top - tooltipHeight - 10;
+                }
+                
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
             });
 
             // Add sorting functionality
@@ -2743,28 +3009,56 @@
                             layout = cy.layout({
                                 name: 'concentric',
                                 concentric: node => node.data('impact'),
-                                levelWidth: () => 1
+                                levelWidth: () => 1,
+                                animate: true,
+                                padding: 30
                             });
                             break;
                         case 'type':
                             layout = cy.layout({
                                 name: 'cola',
-                                nodeSpacing: 50,
-                                groups: node => node.data('type')
+                                nodeSpacing: 80,
+                                groups: node => node.data('type'),
+                                animate: true,
+                                padding: 30
                             });
                             break;
                         case 'connections':
                             layout = cy.layout({
                                 name: 'cola',
-                                nodeSpacing: 50,
+                                nodeSpacing: 80,
                                 alignment: {vertical: true},
-                                sort: (a, b) => b.degree() - a.degree()
+                                sort: (a, b) => b.degree() - a.degree(),
+                                animate: true,
+                                padding: 30
                             });
                             break;
                     }
                     
                     layout.run();
                 });
+            });
+
+            // Initial layout
+            cy.layout({
+                name: 'cola',
+                nodeSpacing: 80,
+                edgeLength: 200,
+                animate: true,
+                maxSimulationTime: 2000,
+                padding: 30
+            }).run();
+
+            // Add zoom controls
+            cy.on('zoom', function() {
+                const zoom = cy.zoom();
+                cy.style()
+                    .selector('node')
+                    .style({
+                        'font-size': Math.max(12, 12 / zoom) + 'px',
+                        'text-outline-width': Math.max(2, 2 / zoom)
+                    })
+                    .update();
             });
         }
 
