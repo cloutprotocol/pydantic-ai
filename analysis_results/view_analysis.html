@@ -1398,6 +1398,144 @@
             color: var(--primary-color);
             font-weight: bold;
         }
+        /* Timeline styles */
+        .timeline-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .timeline-year {
+            margin-bottom: 40px;
+        }
+
+        .timeline-year h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .timeline-event {
+            display: flex;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .timeline-date {
+            min-width: 150px;
+            padding-right: 20px;
+            position: relative;
+        }
+
+        .timeline-date::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-left: 30px;
+            border-left: 2px solid #e2e8f0;
+        }
+
+        .timeline-description {
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .timeline-impacts {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 10px;
+        }
+
+        .timeline-impacts h4 {
+            margin: 0 0 10px 0;
+            color: var(--secondary-color);
+        }
+
+        .timeline-impacts ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .timeline-impacts li {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .timeline-impacts li:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .impact-sector {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+
+        .impact-cost {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #64748b;
+        }
+
+        /* Timeline styles */
+        .timeline-nav {
+            background: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .timeline-nav-header {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .timeline-nav-years {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .timeline-nav-year {
+            padding: 5px 12px;
+            background: #f1f5f9;
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: all 0.2s;
+        }
+
+        .timeline-nav-year:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .timeline-container {
+            max-width: 1200px;
+        }
     </style>
 </head>
 <body>
@@ -1822,19 +1960,99 @@
                             <div id="timeline" class="tab-content">
                                 <div class="section">
                                     <h2>Implementation Timeline</h2>
-                                    <div class="timeline">
-                                        ${implementationDates.map(date => `
-                                            <div class="timeline-item">
-                                                <div class="timeline-date">
-                                                    <strong>${date.date || date}</strong>
+                                    
+                                    <div class="timeline-nav">
+                                        ${(() => {
+                                            const years = [...new Set(implementationDates.map(date => {
+                                                const dateObj = new Date(date.date || date);
+                                                return !isNaN(dateObj) ? dateObj.getFullYear() : null;
+                                            }))].sort()
+                                            .filter(year => year !== null);
+                                            
+                                            return `
+                                                <div class="timeline-nav-header">Quick Navigation:</div>
+                                                <div class="timeline-nav-years">
+                                                    ${years.map(year => `
+                                                        <a href="#year-${year}" class="timeline-nav-year">
+                                                            ${year}
+                                                        </a>
+                                                    `).join('')}
                                                 </div>
-                                                ${date.context ? `
-                                                    <div class="timeline-content">
-                                                        ${date.context}
+                                            `;
+                                        })()}
+                                    </div>
+                                    
+                                    <div class="timeline-container">
+                                        ${(() => {
+                                            // Group dates by year
+                                            const datesByYear = new Map();
+                                            implementationDates.forEach(date => {
+                                                const dateObj = new Date(date.date || date);
+                                                if (!isNaN(dateObj)) {  // Only process valid dates
+                                                    const year = dateObj.getFullYear();
+                                                    if (!datesByYear.has(year)) {
+                                                        datesByYear.set(year, []);
+                                                    }
+                                                    datesByYear.get(year).push(date);
+                                                }
+                                            });
+
+                                            // Sort years and render timeline
+                                            return Array.from(datesByYear.entries())
+                                                .sort(([yearA], [yearB]) => yearA - yearB)
+                                                .map(([year, dates]) => `
+                                                    <div id="year-${year}" class="timeline-year">
+                                                        <h3>${year}</h3>
+                                                        <div class="timeline-events">
+                                                            ${dates.map(date => {
+                                                                const dateObj = new Date(date.date || date);
+                                                                const formattedDate = dateObj.toLocaleDateString('en-US', {
+                                                                    month: 'long',
+                                                                    day: 'numeric'
+                                                                });
+                                                                
+                                                                // Find related impacts for this date
+                                                                const relatedImpacts = data.results
+                                                                    .flatMap(section => section.impacts || [])
+                                                                    .filter(impact => impact.timeline === (date.date || date));
+
+                                                                return `
+                                                                    <div class="timeline-event">
+                                                                        <div class="timeline-date">
+                                                                            <strong>${formattedDate}</strong>
+                                                                        </div>
+                                                                        <div class="timeline-content">
+                                                                            ${date.context ? `
+                                                                                <div class="timeline-description">
+                                                                                    ${date.context}
+                                                                                </div>
+                                                                            ` : ''}
+                                                                            ${relatedImpacts.length > 0 ? `
+                                                                                <div class="timeline-impacts">
+                                                                                    <h4>Related Impacts:</h4>
+                                                                                    <ul>
+                                                                                        ${relatedImpacts.map(impact => `
+                                                                                            <li>
+                                                                                                <span class="impact-sector">${impact.sector}</span>
+                                                                                                <p>${impact.description}</p>
+                                                                                                ${impact.estimated_cost ? `
+                                                                                                    <span class="impact-cost">
+                                                                                                        Estimated Cost: ${impact.estimated_cost}
+                                                                                                    </span>
+                                                                                                ` : ''}
+                                                                                            </li>
+                                                                                        `).join('')}
+                                                                                    </ul>
+                                                                                </div>
+                                                                            ` : ''}
+                                                                        </div>
+                                                                    </div>
+                                                                `;
+                                                            }).join('')}
+                                                        </div>
                                                     </div>
-                                                ` : ''}
-                                            </div>
-                                        `).join('')}
+                                                `).join('')
+                                        })()}
                                     </div>
                                 </div>
                             </div>
